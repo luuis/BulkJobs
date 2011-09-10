@@ -153,42 +153,38 @@ $('#calif i').on('mouseover', function () {
         }
     });
     
-    $('#calif i').on('click', function() {
-        var calif = $(this).data('calif');
-        var comen = prompt("Ingresa un comentario");
-
-        /*POST tiene 3 atributos: la pagina que se va a mandar, los campos, y funcion que se hara despuess*/
-        $.post('/EvaluacionC',
-        /*Enviar los campos al Servlets*/
-        { 
-           c: calif, 
-           co: comen,
-           idCuenta: $("#idCuenta").val(), //recuperar el input y luego el valor
-           idCurso: $("#idCurso").val()
-
-        }, function(data, status) {
-            alertify.success(data); //alertify no es nativa, es una libreria
-            window.location.reload(); 
-        });
-    });
-    
     
 });
-
     
-    
-    $('#finalizar').on('click', function() {
-     
+$('#calif i').on('click', function() {
+    var calif = $(this).data('calif');
+    var comen = prompt("Ingresa un comentario");
 
-        /*POST tiene 3 atributos: la pagina que se va a mandar, los campos, y funcion que se hara despuess*/
-        $.post('/FinalizarC',
-        /*Enviar los campos al Servlets*/
-        { 
-            
-           idCursoInscrito: $("#cur").val(), //recuperar el input y luego el valor
+    /*POST tiene 3 atributos: la pagina que se va a mandar, los campos, y funcion que se hara despuess*/
+    $.post('/EvaluacionC',
+    /*Enviar los campos al Servlets*/
+    { 
+       c: calif, 
+       co: comen,
+       idCuenta: $("#idCuenta").val(), //recuperar el input y luego el valor
+       idCurso: $("#idCurso").val()
 
-        }, function(data, status) {
-            alertify.success(data); //alertify no es nativa, es una libreria
-            window.location.reload(); 
-        });
+    }, function(data, status) {
+        alertify.success(data); //alertify no es nativa, es una libreria
+        window.location.reload(); 
     });
+});
+ 
+$('#finalizar').on('click', function() {
+    /*POST tiene 3 atributos: la pagina que se va a mandar, los campos, y funcion que se hara despuess*/
+    $.post('/FinalizarC',
+    /*Enviar los campos al Servlets*/
+    { 
+
+       idCursoInscrito: $("#cur").val(), //recuperar el input y luego el valor
+
+    }, function(data, status) {
+        alertify.success(data); //alertify no es nativa, es una libreria
+        window.location.reload(); 
+    });
+});

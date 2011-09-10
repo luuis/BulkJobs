@@ -248,15 +248,16 @@ try {
                     <tr>
                         <td width="100px">
                             <%
-                            File fotoC = new File(contextPath + "../../web/subida/cursos/" + ci.getCurso().getIdCurso()+ ".jpg");
+                            File fotoC = new File(contextPath + "../../web/subida/cursos/" + ci.getCurso().getCurso().getIdCurso()+ ".jpg");
                             if (fotoC.exists()) { %>
-                            <div id="photo" style="background-image: url('subida/cursos/<%=ci.getCurso().getIdCurso() %>.jpg');"></div>
+                            <div id="photo" style="background-image: url('subida/cursos/<%=ci.getCurso().getCurso().getIdCurso() %>.jpg');"></div>
                             <% } else { %>
                             <div id="photo"></div>
                             <% } %> 
                         </td>
                         <td>
-                            <strong><%= ci.getCurso().getNombre() %></strong><br><%= ci.getCurso().getDesc()%>
+                            <strong><%= ci.getCurso().getCurso().getNombre() %></strong><br><%= ci.getCurso().getCurso().getDesc()%>
+                            <center><a href="curso.jsp?c=<%= ci.getCurso().getId()%>"><button type="submit" name="boton" value="inscrito">Inscribirse</button></a></center> 
                         </td>
                     </tr>
                 </table>

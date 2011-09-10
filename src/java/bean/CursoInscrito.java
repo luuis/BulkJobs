@@ -15,24 +15,24 @@ import java.util.logging.Logger;
 public class CursoInscrito {
     
     private int idCI;
-    private Curso curso;
+    private CursoComprado curso;
     private Cuenta cuenta;
     private Date fecha;
 
-    public CursoInscrito(int idCI, Curso curso, Cuenta cuenta, Date fecha) {
+    public CursoInscrito(int idCI, CursoComprado curso, Cuenta cuenta, Date fecha) {
         this.idCI = idCI;
         this.curso = curso;
         this.cuenta = cuenta;
         this.fecha = fecha;
     }
 
-    public CursoInscrito(Curso curso, Cuenta cuenta, Date fecha) {
+    public CursoInscrito(CursoComprado curso, Cuenta cuenta, Date fecha) {
         this.curso = curso;
         this.cuenta = cuenta;
         this.fecha = fecha;
     }
 
-    public CursoInscrito(Curso curso, Cuenta cuenta) {
+    public CursoInscrito(CursoComprado curso, Cuenta cuenta) {
         this.curso = curso;
         this.cuenta = cuenta;
     }
@@ -45,11 +45,11 @@ public class CursoInscrito {
         this.idCI = idCI;
     }
 
-    public Curso getCurso() {
+    public CursoComprado getCurso() {
         return curso;
     }
 
-    public void setCurso(Curso curso) {
+    public void setCurso(CursoComprado curso) {
         this.curso = curso;
     }
 
@@ -77,7 +77,7 @@ public class CursoInscrito {
         ConexionBD objCBD = new ConexionBD("bolsadetrabajo");
         ArrayList insBD = new ArrayList();
         insBD.add("INSERT INTO curso_inscrito VALUES(null, ?, ?, now())");
-        insBD.add(curso.getIdCurso());
+        insBD.add(curso.getCurso().getIdCurso());
         insBD.add(cuenta.getId());
         
         int inscribir = objCBD.ejecutarABC(insBD);
@@ -102,7 +102,7 @@ public class CursoInscrito {
             objCBD.consultar(instBD);
             ResultSet rs = objCBD.getCdr();
             while(rs.next()){
-               CursoInscrito ci= new CursoInscrito(rs.getInt("id_curso_inscrito"), Curso.obtenerCurso(rs.getInt("cuin_curso")), Empleador.obtenerCuenta(rs.getInt("cuin_cuenta")), rs.getDate("cuin_fecha_insc"));
+               CursoInscrito ci= new CursoInscrito(rs.getInt("id_curso_inscrito"), CursoComprado.obtenerCurso(rs.getInt("cuin_curso")), Empleador.obtenerCuenta(rs.getInt("cuin_cuenta")), rs.getDate("cuin_fecha_insc"));
                cursosIns.add(ci);
             }
             
@@ -123,7 +123,7 @@ public class CursoInscrito {
             objCBD.consultar(instBD);
             ResultSet rs = objCBD.getCdr();
             while(rs.next()){
-                cursosIns= new CursoInscrito(rs.getInt("id_curso_inscrito"), Curso.obtenerCurso(rs.getInt("cuin_curso")), Empleador.obtenerCuenta(rs.getInt("cuin_cuenta")), rs.getDate("cuin_fecha_insc"));
+                cursosIns= new CursoInscrito(rs.getInt("id_curso_inscrito"), CursoComprado.obtenerCurso(rs.getInt("cuin_curso")), Empleador.obtenerCuenta(rs.getInt("cuin_cuenta")), rs.getDate("cuin_fecha_insc"));
             }
         } catch (SQLException ex) {
             Logger.getLogger(CursoInscrito.class.getName()).log(Level.SEVERE, null, ex);
@@ -131,4 +131,46 @@ public class CursoInscrito {
         return cursosIns;
     }
     
+    public static boolean estaInscrito(int idCurso, int idCuenta) {
+        boolean inscrito = false;
+        try {
+            ConexionBD objCBD = new ConexionBD("bolsadetrabajo");
+            ArrayList instBD = new ArrayList();
+            instBD.add("SELECT * from curso_inscrito WHERE cuin_curso = ? AND cuin_cuenta = ? ");
+            instBD.add(idCurso);
+            instBD.add(idCuenta);
+            objCBD.consultar(instBD);
+            ResultSet rs = objCBD.getCdr();
+            if(rs.next()){
+            inscrito = true;
+            }
+            rs.close();
+           objCBD.cerrarConexion();
+        } catch (SQLException ex) {
+           ex.printStackTrace();
+        }
+        return inscrito;
+    }
+    
+       
+    public static boolean estaTerminado(int idCurso, int idCuenta){
+       boolean terminado = false;
+       try {
+            ConexionBD objCBD = new ConexionBD("bolsadetrabajo");
+            ArrayList instBD = new ArrayList();
+            instBD.add("SELECT * from curso_inscrito WHERE cuin_curso = ? AND cuin_cuenta = ? AND cuin_estado = 1  ");
+            instBD.add(idCurso);
+            instBD.add(idCuenta);
+            objCBD.consultar(instBD);
+            ResultSet rs = objCBD.getCdr();
+            if(rs.next()){
+                terminado = true;
+            }
+            rs.close();
+           objCBD.cerrarConexion();
+       } catch (Exception e) {
+           e.printStackTrace();
+       }
+       return terminado;
+   }
 }

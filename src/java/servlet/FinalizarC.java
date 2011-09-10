@@ -34,7 +34,7 @@ public class FinalizarC extends HttpServlet {
             ConexionBD objCBD = new ConexionBD("bolsadetrabajo");
             ArrayList instruccionBD = new ArrayList();
             instruccionBD.add("UPDATE curso_inscrito SET cuin_estado = 1 WHERE id_curso_inscrito = ?");
-            instruccionBD.add(request.getParameter("idCursoInscrito"));
+            instruccionBD.add(request.getParameter("idCursoComprado"));
             int finalizar = objCBD.ejecutarABC(instruccionBD);
             if(finalizar > 0){
                 out.println("CURSO FINALIZADO CON EXITO");

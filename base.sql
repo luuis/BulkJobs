@@ -253,11 +253,12 @@ CREATE TABLE IF NOT EXISTS `curso_inscrito` (
   `cuin_curso` int(11) NOT NULL,
   `cuin_cuenta` int(11) NOT NULL,
   `cuin_fecha_insc` datetime NOT NULL,
+  `cuin_estado` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id_curso_inscrito`),
   KEY `cuin_curso` (`cuin_curso`),
   KEY `cuin_cuenta` (`cuin_cuenta`),
   CONSTRAINT `cuin_cuenta` FOREIGN KEY (`cuin_cuenta`) REFERENCES `cuenta` (`id_cuenta`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `cuin_curso` FOREIGN KEY (`cuin_curso`) REFERENCES `curso` (`id_curso`) ON DELETE CASCADE ON UPDATE CASCADE
+  CONSTRAINT `cuin_curso` FOREIGN KEY (`cuin_curso`) REFERENCES `curso_comprado` (`id_curso_comprado`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_spanish_ci;
 
 -- Volcando datos para la tabla bolsadetrabajo.curso_inscrito: ~0 rows (aproximadamente)

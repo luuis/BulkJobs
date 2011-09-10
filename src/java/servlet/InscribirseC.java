@@ -53,7 +53,7 @@ public class InscribirseC extends HttpServlet {
                 out.println("Ya estas inscrito en este curso");
             }else{
             ArrayList instruccionBD = new ArrayList();
-            instruccionBD.add("INSERT INTO curso_inscrito VALUES (null, ?, ?, NOW());");
+            instruccionBD.add("INSERT INTO curso_inscrito VALUES (null, ?, ?, NOW(), 0);");
             instruccionBD.add(request.getParameter("idCurso"));
             instruccionBD.add(request.getParameter("idCuenta"));
             objCBD.ejecutarABC(instruccionBD);
