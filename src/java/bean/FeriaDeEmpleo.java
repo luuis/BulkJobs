@@ -80,7 +80,7 @@ public class FeriaDeEmpleo {
         try {
             ConexionBD objCBD = new ConexionBD("bolsadetrabajo");
             ArrayList instBD = new ArrayList();
-            instBD.add("SELECT * FROM feria_de_empleo ORDER BY id_feria desc");
+            instBD.add("SELECT * FROM feria_de_empleo ORDER BY id_feria desc LIMIT 1");
             objCBD.consultar(instBD);
             ResultSet rs = objCBD.getCdr();
             while (rs.next()) {
