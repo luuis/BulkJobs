@@ -107,6 +107,7 @@ CREATE TABLE IF NOT EXISTS `capacitador` (
 
 -- Volcando datos para la tabla bolsadetrabajo.capacitador: ~0 rows (aproximadamente)
 /*!40000 ALTER TABLE `capacitador` DISABLE KEYS */;
+INSERT INTO `capacitador` (`capa_cuenta`, `capa_nombre`, `capa_telefono`, `capa_dir_num_int`, `capa_dir_num_ext`, `capa_dir_localidad`, `capa_dir_municipio`, `capa_dir_estado`, `capa_no_tarjeta`, `capa_latitud`, `capa_longitud`) VALUES (4, 'Frances Courses', 5544332211, 'Calle 1', 'Cerrada 2', 'Casas Quma', 'Tizayuca', 'Hidalgo', 1234567890123456, 0.000000, 0.000000);
 /*!40000 ALTER TABLE `capacitador` ENABLE KEYS */;
 
 -- Volcando estructura para tabla bolsadetrabajo.categoria
@@ -192,8 +193,10 @@ CREATE TABLE IF NOT EXISTS `cuenta` (
 
 -- Volcando datos para la tabla bolsadetrabajo.cuenta: ~1 rows (aproximadamente)
 /*!40000 ALTER TABLE `cuenta` DISABLE KEYS */;
-INSERT INTO `cuenta` (`id_cuenta`, `cuen_rol`, `cuen_correo`, `cuen_contrasena`, `cuen_salt`, `cuen_activa`) VALUES
-	(1, 'Bolsa de Trabajo', 'admin@bulkjobs.com', 'z6coEuht5rWHskHiaMlDGbGl2rzxSN7EsGR8pkZz09w=', 'i0IgZQyyMDM1XO68i0EfaLaf8gei2m', 0);
+INSERT INTO `cuenta` (`id_cuenta`, `cuen_rol`, `cuen_correo`, `cuen_contrasena`, `cuen_salt`, `cuen_activa`) VALUES (1, 'Bolsa de Trabajo', 'admin@bulkjobs.com', 'z6coEuht5rWHskHiaMlDGbGl2rzxSN7EsGR8pkZz09w=', 'i0IgZQyyMDM1XO68i0EfaLaf8gei2m', 1);
+INSERT INTO `cuenta` (`id_cuenta`, `cuen_rol`, `cuen_correo`, `cuen_contrasena`, `cuen_salt`, `cuen_activa`) VALUES (2, 'Empleador', 'empleador@bulkjobs.com', 'k7Yv5HeKKUHp1eSPkfWiNlzEeyUhkhr4Gtf2LuU/P1A=', 'mZVLgEDPW3BDr2GDUQ0QskhUZIzBiy', 1);
+INSERT INTO `cuenta` (`id_cuenta`, `cuen_rol`, `cuen_correo`, `cuen_contrasena`, `cuen_salt`, `cuen_activa`) VALUES (3, 'Reclutador', 'reclutador@bulkjobs.com', 'eAnkNggAQFAGqoUR/76VnPI8e6Cj9uq4PIVCp6RjjNU=', '50FFJydoSSckx6ETafh7ROgtBvAQSZ', 1);
+INSERT INTO `cuenta` (`id_cuenta`, `cuen_rol`, `cuen_correo`, `cuen_contrasena`, `cuen_salt`, `cuen_activa`) VALUES (4, 'Capacitador', 'capacitador@bulkjobs.com', 'ZujqSGA//NPHbbNL31Y+YRVastjK9hXEcgui+8VWaMU=', '1a7FVvikYYpzyFUoOUluuvXqVLOhGR', 1);
 /*!40000 ALTER TABLE `cuenta` ENABLE KEYS */;
 
 -- Volcando estructura para tabla bolsadetrabajo.curriculum
@@ -229,9 +232,11 @@ CREATE TABLE IF NOT EXISTS `curso` (
 
 -- Volcando estructura para tabla bolsadetrabajo.curso_comprado
 CREATE TABLE IF NOT EXISTS `curso_comprado` (
+  `id_curso_comprado` int(11) NOT NULL AUTO_INCREMENT,
   `cuco_curso` int(11) NOT NULL,
   `cuco_cuenta` int(11) NOT NULL,
   `cuco_fecha_hora` datetime NOT NULL,
+  PRIMARY KEY (`id_curso_comprado`),
   KEY `curso_comprado_curso` (`cuco_curso`),
   KEY `curso_comprado_cuenta` (`cuco_cuenta`),
   CONSTRAINT `curso_comprado_cuenta` FOREIGN KEY (`cuco_cuenta`) REFERENCES `cuenta` (`id_cuenta`) ON DELETE CASCADE ON UPDATE CASCADE,
@@ -400,6 +405,7 @@ CREATE TABLE IF NOT EXISTS `empleador` (
 
 -- Volcando datos para la tabla bolsadetrabajo.empleador: ~0 rows (aproximadamente)
 /*!40000 ALTER TABLE `empleador` DISABLE KEYS */;
+INSERT INTO `empleador` (`empl_cuenta`, `empl_estado_civil`, `empl_profesion`, `empl_nombre`, `empl_ap_pat`, `empl_ap_mat`, `empl_sexo`, `empl_telefono`, `empl_fecha_nacimiento`, `empl_curp`, `empl_dir_num_int`, `empl_dir_num_ext`, `empl_dir_localidad`, `empl_dir_municipio`, `empl_dir_estado`, `empl_latitud`, `empl_longitud`) VALUES (2, 'Solter@', 'Desarrolladora', 'Andrea Vanessa', 'Perez', 'Sibaja', 'M', 5516124206, '1999-01-01', 'SURL990529HMCRSS04', 'Lago 1', 'Calle 4', 'Paseos del Lago 2', 'Zumpango de Ocampo', 'Mexico', 0.000000, 0.000000);
 /*!40000 ALTER TABLE `empleador` ENABLE KEYS */;
 
 -- Volcando estructura para tabla bolsadetrabajo.evaluacion
@@ -556,6 +562,21 @@ CREATE TABLE IF NOT EXISTS `publicidad` (
 /*!40000 ALTER TABLE `publicidad` DISABLE KEYS */;
 /*!40000 ALTER TABLE `publicidad` ENABLE KEYS */;
 
+-- Volcando estructura para tabla bolsadetrabajo.recuperar_contrasena
+CREATE TABLE IF NOT EXISTS `recuperar_contrasena` (
+  `id_recuperar` int(11) NOT NULL AUTO_INCREMENT,
+  `reco_cuenta` int(11) NOT NULL,
+  `reco_token` varchar(16) NOT NULL,
+  PRIMARY KEY (`id_recuperar`),
+  UNIQUE KEY `reco_token` (`reco_token`),
+  KEY `reco_cuenta` (`reco_cuenta`),
+  CONSTRAINT `reco_cuenta` FOREIGN KEY (`reco_cuenta`) REFERENCES `cuenta` (`id_cuenta`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- Volcando datos para la tabla bolsadetrabajo.recuperar_contrasena: ~0 rows (aproximadamente)
+/*!40000 ALTER TABLE `recuperar_contrasena` DISABLE KEYS */;
+/*!40000 ALTER TABLE `recuperar_contrasena` ENABLE KEYS */;
+
 -- Volcando estructura para tabla bolsadetrabajo.reclutador
 CREATE TABLE IF NOT EXISTS `reclutador` (
   `recl_cuenta` int(11) NOT NULL AUTO_INCREMENT,
@@ -576,6 +597,7 @@ CREATE TABLE IF NOT EXISTS `reclutador` (
 
 -- Volcando datos para la tabla bolsadetrabajo.reclutador: ~0 rows (aproximadamente)
 /*!40000 ALTER TABLE `reclutador` DISABLE KEYS */;
+INSERT INTO `reclutador` (`recl_cuenta`, `recl_categoria`, `recl_nombre_empresa`, `recl_dir_num_int`, `recl_dir_num_ext`, `recl_dir_localidad`, `recl_dir_municipio`, `recl_dir_estado`, `recl_telefono`, `recl_latitud`, `recl_longitud`) VALUES (3, 19, 'Ixtli Studios', 'Rancho los Tejocotes', 'Mz. 45 Lt. 2', 'Sierra Hermosa', 'Tecamac', 'Mexico', 5561811486, 0.000000, 0.000000);
 /*!40000 ALTER TABLE `reclutador` ENABLE KEYS */;
 
 -- Volcando estructura para tabla bolsadetrabajo.vacante

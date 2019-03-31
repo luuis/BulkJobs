@@ -1,3 +1,5 @@
+<%@page import="bean.PlanPComprado"%>
+<%@page import="bean.PlanP"%>
 <%@page import="java.util.Date"%>
 <%@page import="bean.PlanComprado"%>
 <%@page import="bean.Plan"%>
@@ -15,92 +17,109 @@
 </jsp:include>
     <form action="" method="post"  autocomplete="off" data-parsley-errors-messages-disabled class="validate">
 <section class="two small">
-    
-    <%
-    if(request.getParameter("comprar") != null){
-        if(request.getParameter("tipo").equals("curso")){
+    <% if (request.getParameter("comprar") != null) {
+        if (request.getParameter("tipo").equals("curso")) {
             CursoComprado cc = new CursoComprado(Curso.obtenerCurso(Integer.parseInt(request.getParameter("id"))), Reclutador.obtenerCuenta(sesion.getId()));      
             
             Tarjeta t = Tarjeta.obtenerTarjeta(Long.parseLong(request.getParameter("numero")));
             
-            if(t != null){
+            if (t != null) {
                 System.out.println(t.getSaldo());
                 System.out.println(request.getParameter("total"));
-                if(t.getSaldo() >= Double.parseDouble(request.getParameter("total"))){
+                if (t.getSaldo() >= Double.parseDouble(request.getParameter("total"))) {
                     boolean registrado = cc.registrarC();
             
-                    if(registrado){
-                         out.println("<script>alertify.success('Se ha registrado');</script>");
-                         t.quitarSaldo(Double.parseDouble(request.getParameter("total")));
-                         
-                         Movimiento.registrar(t, "Pago de compra: Curso", Double.parseDouble(request.getParameter("total")));
-                    }else{
-                         out.println("<script>alertify.error('No se ha registrado');</script>");
+                    if (registrado) {
+                        out.println("<script>alertify.success('Se ha registrado');</script>");
+                        t.quitarSaldo(Double.parseDouble(request.getParameter("total")));
+                        Movimiento.registrar(t, "Pago de compra: Curso", Double.parseDouble(request.getParameter("total")));
+                    } else {
+                        out.println("<script>alertify.error('No se ha registrado');</script>");
                     }
             
                 } else {
                     out.println("<script>alertify.error('No tines saldo suficiente, intente con otra');</script>");
                 }
-            }else{
+            } else {
                 out.println("<script>alertify.error('La tarjeta no existe');</script>");
             }
-            
-          
-        }else if(request.getParameter("tipo").equals("plan")){
+        } else if (request.getParameter("tipo").equals("plan")) {
             Date fl = new Date();
             fl.setTime(fl.getTime() + (Long.parseLong(request.getParameter("tiempo")) * 1000)); 
             PlanComprado pc = new PlanComprado(Plan.obtenerPlan(Integer.parseInt(request.getParameter("id"))), Reclutador.obtenerCuenta(sesion.getId()), fl);
-             
             
             Tarjeta t = Tarjeta.obtenerTarjeta(Long.parseLong(request.getParameter("numero")));
             
-            if(t != null){
+            if (t != null) {
                 System.out.println(t.getSaldo());
                 System.out.println(request.getParameter("total"));
                 
-                if(t.getSaldo() >= Double.parseDouble(request.getParameter("total"))){
+                if (t.getSaldo() >= Double.parseDouble(request.getParameter("total"))) {
                     boolean registrado = pc.registrarC();
                 
-                if(registrado){
-                         out.println("<script>alertify.success('Se ha registrado');</script>");
-                         t.quitarSaldo(Double.parseDouble(request.getParameter("total")));
-                         
-                         Movimiento.registrar(t, "Pago de compra: Plan", Double.parseDouble(request.getParameter("total")));
-                    }else{
+                    if (registrado) {
+                        out.println("<script>alertify.success('Se ha registrado');</script>");
+                        t.quitarSaldo(Double.parseDouble(request.getParameter("total")));
+                        Movimiento.registrar(t, "Pago de compra: Plan", Double.parseDouble(request.getParameter("total")));
+                    } else {
                          out.println("<script>alertify.error('No se ha registrado');</script>");
                     }
-            
                 } else {
                     out.println("<script>alertify.error('No tines saldo suficiente, intente con otra');</script>");
                 }
-            }else{
+            } else {
                 out.println("<script>alertify.error('La tarjeta no existe');</script>");
             }
+        } else if (request.getParameter("tipo").equals("planp")) {
+            Date fl = new Date(); /*Primero obtenga la fecha actual(sistema) y lo guardo en fecha limite*/
+            fl.setTime(fl.getTime() + (Long.parseLong(request.getParameter("tiempo")) * 1000));
+            /*Esta en segundos y lo paso a milisegundos xkhe no lo se xd jajaja
+            y eso lo convierto a long(porque asi tiene que ser) y al final lo agrega al tiempo(cuando lo obtenga)*/
+            PlanPComprado ppc = new PlanPComprado(PlanP.obtenerPlanP(Integer.parseInt(request.getParameter("id"))), Reclutador.obtenerCuenta(sesion.getId()), fl);
             
+            Tarjeta t = Tarjeta.obtenerTarjeta(Long.parseLong(request.getParameter("numero")));
+            
+            if (t != null) {
+                System.out.println(t.getSaldo());
+                System.out.println(request.getParameter("total"));
+                
+                if (t.getSaldo() >= Double.parseDouble(request.getParameter("total"))) {
+                    boolean registrado = ppc.registrarPPC();
+                
+                    if (registrado) {
+                        out.println("<script>alertify.success('Se ha registrado');</script>");
+                        t.quitarSaldo(Double.parseDouble(request.getParameter("total")));
+                        Movimiento.registrar(t, "Pago de compra: Plan Publicitario", Double.parseDouble(request.getParameter("total")));
+                    } else {
+                         out.println("<script>alertify.error('No se ha registrado');</script>");
+                    }
+                } else {
+                    out.println("<script>alertify.error('No tines saldo suficiente, intente con otra');</script>");
+                }
+            } else {
+                out.println("<script>alertify.error('La tarjeta no existe');</script>");
+            }
         }
-    }
-    %>
-    
-        
+    } %>
     <div class="big">
         <div class="container">
             <h2>Datos de facturación</h2>
             <p>
                 <label>Titular de la tarjeta <font color="red">*</font></label>
                 <input type="text" name="nombre" class="cardHelper" required
-                   data-el="cardHolder" data-side="front" placeholder="Nombre completo"
-                   data-parsley-maxlength="152" maxlength="152" 
-                   data-parsley-maxlength-message="El nombre del titular no debe superar a 152 carácteres"
-                   data-parsley-required-message="Debes ingresar el nombre del titular">
+                    data-el="cardHolder" data-side="front" placeholder="Nombre completo"
+                    data-parsley-maxlength="152" maxlength="152" 
+                    data-parsley-maxlength-message="El nombre del titular no debe superar a 152 carácteres"
+                    data-parsley-required-message="Debes ingresar el nombre del titular">
             </p>
             <p>
                 <label>Número de tarjeta <font color="red">*</font></label>
                 <input type="text" name="numero" class="cardHelper" required
-                   data-el="cardNumber" data-side="front" placeholder="Número de tarjeta"
-                   data-parsley-maxlength="16" maxlength="16"
-                   data-parsley-minlength="16" minlength="16"
-                   data-parsley-maxlength-message="El número de tarjeta debe ser 16 dígitos"
-                   data-parsley-required-message="Debes ingresar el número de tarjeta">
+                    data-el="cardNumber" data-side="front" placeholder="Número de tarjeta"
+                    data-parsley-maxlength="16" maxlength="16"
+                    data-parsley-minlength="16" minlength="16"
+                    data-parsley-maxlength-message="El número de tarjeta debe ser 16 dígitos"
+                    data-parsley-required-message="Debes ingresar el número de tarjeta">
             </p>
             <p>
                 <label>Fecha de vencimiento <font color="red">*</font></label>
@@ -125,7 +144,6 @@
                    data-parsley-required-message="Debes ingresar el CCV">
             </p>
             <p><center>
-                
                 <div id="card"> 
                     <div class="side front"> 
                         <div class="card_logo" id="none"></div>
@@ -177,11 +195,10 @@
     <div class="small">
         <div class="container">
             <h2>Compra</h2>
-            <%
-            if(request.getParameter("c") != null){
+            <% if (request.getParameter("c") != null) { // Curso
                 Curso c = Curso.obtenerCurso(Integer.parseInt(request.getParameter("c")));
-                if(c != null){ %>
-                    <table width="100%">
+                if (c != null) { %>
+            <table width="100%">
                 <tr>
                     <th>Concepto</th>
                     <th>Precio</th>
@@ -195,17 +212,16 @@
                     <td><%=c.getPrecio()%></td>
                 </tr>
             </table>
-                <input type="text" name="tipo" value="curso">
-                <input type="text" name="id" value="<%=c.getIdCurso()%>">
-                <input type="text" name="total" value="<%=c.getPrecio()%>">
-                <%}else{
+            <input type="text" name="tipo" value="curso">
+            <input type="text" name="id" value="<%=c.getIdCurso()%>">
+            <input type="text" name="total" value="<%=c.getPrecio()%>">
+                <% } else {
                     response.sendRedirect("cursos.jsp");
                 }
-            }else if(request.getParameter("p") != null){
+            } else if (request.getParameter("p") != null) { // Plan
                 Plan p = Plan.obtenerPlan(Integer.parseInt(request.getParameter("p")));
-                if(p != null){ %>
-
-                <table width="100%">
+                if (p != null) { %>
+            <table width="100%">
                 <tr>
                     <th>Concepto</th>
                     <th>Precio</th>
@@ -224,25 +240,47 @@
                     <td><%=p.getPrecio()%></td>
                 </tr>
             </table>
-                <input type="text" name="tipo" value="plan">
-                <input type="text" name="id" value="<%=p.getIdPlan()%>">
-                <input type="text" name="tiempo" value="<%=p.getTiempo()%>">
-                <input type="text" name="total" value="<%=p.getPrecio()%>">
-                <%}else{
+            <input type="text" name="tipo" value="plan">
+            <input type="text" name="id" value="<%=p.getIdPlan()%>">
+            <input type="text" name="tiempo" value="<%=p.getTiempo()%>">
+            <input type="text" name="total" value="<%=p.getPrecio()%>">
+                <% } else {
                     response.sendRedirect("planes.jsp");
                 }
-            }
-            %>
-                 
-            
+            } else if (request.getParameter("i") != null) { // Plan publicitario
+                PlanP pp = PlanP.obtenerPlanP(Integer.parseInt(request.getParameter("i")));
+                if (pp != null) { %>
+            <table width="100%">
+                <tr>
+                    <th>Concepto</th>
+                    <th>Precio</th>
+                </tr>
+                <tr>
+                    <td>Plan Publicitario: <%=pp.getNombre()%></td>
+                    <td><%=pp.getPrecio()%></td>
+                </tr>
+                <tr>
+                    <td>Tiempo:</td>
+                    <td><%=pp.getTiempo()%></td>
+                </tr>
+                <tr>
+                    <th>Total</th>
+                    <td><%=pp.getPrecio()%></td>
+                </tr>
+            </table>
+            <input type="text" name="tipo" value="planp">
+            <input type="text" name="id" value="<%=pp.getIdPlanP()%>">
+            <input type="text" name="tiempo" value="<%=pp.getTiempo()%>">
+            <input type="text" name="total" value="<%=pp.getPrecio()%>">
+                <% } else {
+                    response.sendRedirect("planesp.jsp");
+                }
+            } %>
             <center><button type="submit" name="comprar">
                 <i class="fas fa-shopping-cart"></i> Pagar
             </button></center>
-            
-            
         </div>
     </div>
-    
 </section>
-             </form>
+</form>
 <%@include file="template.footer.jsp" %>

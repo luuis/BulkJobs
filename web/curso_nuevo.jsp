@@ -6,43 +6,28 @@
     <jsp:param name="titulo" value="Registrar Cursos" />
 </jsp:include>
 <section class="one">
-    <form action="" method="post" autocomplete="off" data-parsley-errors-messages-disabled>
+    <form action="/CursoNuevo" method="post" enctype="multipart/form-data" autocomplete="off" data-parsley-errors-messages-disabled> <!--Por default solo te accepta texto el formulario
+         y con el enctype lo cambio-->
     <div class="container">
         <center><img src="img/logo-black.png"></center>
         <br/>
         <center> <h1>Registrar Cursos </center></h1>
     </div>
-    <% if (request.getParameter("boton") != null){
-    
-            Curso curso = new Curso(sesion.getId(), request.getParameter("nombre"), request.getParameter("desc"), Double.parseDouble(request.getParameter("precio")));
-            boolean registrar = curso.Registrar();
-            
-            
-            if(registrar){
-                 response.sendRedirect("/cursos.jsp?m=registrado");
-                } else {
-                    out.println("<script>alertify.error('Comprueba los datos ingresados e intentalo de nuevo');</script>");
-                
-            }
-    }
-    
-    if (request.getParameter("m") != null) {
-                if (request.getParameter("m").equalsIgnoreCase("Registro")) {
-                    out.println("<script>alertify.success('Tu curso ha sido registrado')</script>");
-                }
-            }
-    
-    
-
-
-
-
-%>
+    <% if (request.getParameter("m") != null) {
+        if (request.getParameter("m").equalsIgnoreCase("Registro")) {
+            out.println("<script>alertify.success('Tu curso ha sido registrado')</script>");
+        }
+    } %>
     <div class="container">
         <center>
             <p>
                 <label>Nombre:  <font color="red">*</font></label>
                 <input type="text" required name="nombre">
+            </p>
+            
+            <p>
+                <label>Imagen:  <font color="red">*</font></label>
+                <input type="file" required name="img">
             </p>
             
             <p>

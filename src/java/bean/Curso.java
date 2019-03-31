@@ -14,12 +14,12 @@ import java.util.logging.Logger;
 public class Curso {
     
     private int idCurso;
-    private int cuenta;
+    private Capacitador cuenta; //Estoy llamando al bean para obtener lo quiero jaja 
     private String nombre;
     private String desc;
     private double precio;
 
-    public Curso(int idCurso, int cuenta, String nombre, String desc, double precio) {
+    public Curso(int idCurso, Capacitador cuenta, String nombre, String desc, double precio) {
         this.idCurso = idCurso;
         this.cuenta = cuenta;
         this.nombre = nombre;
@@ -27,7 +27,7 @@ public class Curso {
         this.precio = precio;
     }
 
-    public Curso(int cuenta, String nombre, String desc, double precio) {
+    public Curso(Capacitador cuenta, String nombre, String desc, double precio) {
         this.cuenta = cuenta;
         this.nombre = nombre;
         this.desc = desc;
@@ -53,14 +53,14 @@ public class Curso {
     /**
      * @return the cuenta
      */
-    public int getCuenta() {
+    public Capacitador getCuenta() {
         return cuenta;
     }
 
     /**
      * @param cuenta the cuenta to set
      */
-    public void setCuenta(int cuenta) {
+    public void setCuenta(Capacitador cuenta) {
         this.cuenta = cuenta;
     }
 
@@ -112,12 +112,13 @@ public class Curso {
         ConexionBD objCBD = new ConexionBD("bolsadetrabajo");
         ArrayList instBD = new ArrayList();
         instBD.add("INSERT INTO curso values(null, ?, ?, ?, ?)");
-        instBD.add(cuenta);
+        instBD.add(cuenta.getId());
         instBD.add(nombre);
         instBD.add(desc);
         instBD.add(precio);
         int registrar = objCBD.ejecutarABC(instBD);
         if(registrar > 0){
+            idCurso = objCBD.ultimoId(); //una vez registrado se recupera y guardo jeje 
             return true;
         }
         return false;
@@ -134,7 +135,7 @@ public class Curso {
             objCBD.consultar(instBD);
             ResultSet rs = objCBD.getCdr();
             while(rs.next()){
-                curso = new Curso(rs.getInt("id_curso"), rs.getInt("curs_cuenta"), rs.getString("curs_nombre"), rs.getString("curs_descripcion"), rs.getDouble("curs_precio"));
+                curso = new Curso(rs.getInt("id_curso"), Capacitador.obtenerCuenta(rs.getInt("curs_cuenta")), rs.getString("curs_nombre"), rs.getString("curs_descripcion"), rs.getDouble("curs_precio"));
                 cursos.add(curso);
             }
         } catch (SQLException ex) {
@@ -155,31 +156,29 @@ public class Curso {
             objCBD.consultar(instBD);
             ResultSet rs = objCBD.getCdr();
             while(rs.next()){
-                curso = new Curso(rs.getInt("id_curso"), rs.getInt("curs_cuenta"), rs.getString("curs_nombre"), rs.getString("curs_descripcion"), rs.getDouble("curs_precio"));
+                curso = new Curso(rs.getInt("id_curso"), Capacitador.obtenerCuenta(rs.getInt("curs_cuenta")), rs.getString("curs_nombre"), rs.getString("curs_descripcion"), rs.getDouble("curs_precio"));
     
             }
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
-         return curso;
+        return curso;
     }
     
     
     public static boolean eliminar(int id){
-     
-           ConexionBD objCBD = new ConexionBD("bolsadetrabajo");
-           ArrayList instBD = new ArrayList();
-           instBD.add("DELETE FROM curso WHERE id_curso=?");
-           instBD.add(id);
-           int eliminar = objCBD.ejecutarABC(instBD);
-           if(eliminar > 0){
-               return true;
-           }
-           return false;
+        ConexionBD objCBD = new ConexionBD("bolsadetrabajo");
+        ArrayList instBD = new ArrayList();
+        instBD.add("DELETE FROM curso WHERE id_curso=?");
+        instBD.add(id);
+        int eliminar = objCBD.ejecutarABC(instBD);
+        if(eliminar > 0){
+            return true;
+        }
+        return false;
     }
     
     public  boolean editar(int id){
-        
         ConexionBD objCBD = new ConexionBD("bolsadetrabajo");
         ArrayList instBD = new ArrayList();
         instBD.add("UPDATE curso SET curs_cuenta=?, curs_nombre=?, curs_descripcion=?, curs_precio=? WHERE id_curso=?");
@@ -192,10 +191,7 @@ public class Curso {
         if(editar > 0){
             return true;
         }
-        return false;
-        
+        return false;   
     }
-    
-    
     
 }

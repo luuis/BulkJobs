@@ -55,10 +55,15 @@
                 <p><center><button type="submit">Filtrar</button></center></p>
             </form>
         </div>
-                    
-                    <div class="container">
-                        <img src="img/1x1.png" width="100%" height="300px">
-                    </div>
+        <%
+        PlanPComprado ppc = PlanPComprado.obtenerP();
+        if (ppc != null) { %>
+            <div class="container">
+                <a href="<%=ppc.getVinculo()%>" target="_blank">
+                    <img src="subida/publicidad/<%=ppc.getId()%>.jpg" width="100%" height="300px">
+                </a>
+            </div>
+        <% } %>
     </div>
 </section>
 <%@include file="template.footer.jsp" %>

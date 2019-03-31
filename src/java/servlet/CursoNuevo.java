@@ -1,5 +1,6 @@
 package servlet;
 
+import bean.Capacitador;
 import bean.Curso;
 import bean.Sesion;
 import extra.ConexionBD;
@@ -39,14 +40,12 @@ public class CursoNuevo extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         Sesion sesion = (Sesion) request.getSession().getAttribute("sesion");
+        
         if (sesion != null && sesion.isIniciada()) {
-            Curso curso = new Curso(sesion.getId(), request.getParameter("nombre"), request.getParameter("desc"), Double.parseDouble(request.getParameter("precio")));
+            Curso curso = new Curso(Capacitador.obtenerCuenta(sesion.getId()), request.getParameter("nombre"), request.getParameter("desc"), Double.parseDouble(request.getParameter("precio")));
             boolean registrar = curso.Registrar();
             
-            
             if(registrar){
-                 
-                
                 if (request.getPart("img") != null && request.getPart("img").getSize() > 0) {
                 try {
                     Part part = request.getPart("img");

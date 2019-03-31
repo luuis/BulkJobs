@@ -61,7 +61,7 @@ Sesion sh = (Sesion) session.getAttribute("sesion"); %>
                                 <li><a href="plan_nuevo.jsp">Agregar plan</a></li>
                             </ul><% } %>
                         </li>
-                        <% if (sh.esCapacitador() || sh.esReclutador()) { %>
+                        <% if (sh.esCapacitador() || sh.esReclutador() || sh.esAdmin()) { %>
                         <li>
                             <a href="planesp.jsp" aria-haspopup="true">Publicidad</a>
                             <% if (sh.esCapacitador()) { %>

@@ -1,3 +1,5 @@
+<%@page import="bean.CursoInscrito"%>
+<%@page import="bean.CursoComprado"%>
 <%@page import="java.util.ArrayList"%>
 <%@page import="bean.Evaluacion"%>
 <%@page import="java.io.File"%>
@@ -125,23 +127,39 @@ try {
                 <tr>
                     <th>Direccion:</th>
                     <td><%= perfil.getDireccionLocalidad()%>, <%= perfil.getDireccionNumExterior() %>, <%= perfil.getDireccionNumInterior() %>, <%= perfil.getDireccionMunicipio() %>, <%= perfil.getDireccionEstado() %></td>
-                    
                 </tr>
-            
-                
-                
-                
             </table>
         </div>
                     
-                     <% if (sesion.isIniciada() && (sesion.getId() == cuenta.getId())) { %> 
-                    <div class="container">
-                        
-                        <h2>Mis Cursos</h2>
-                        
-                        
-                    </div>     
-                    <% } %>
+        <% if (sesion.isIniciada() && (sesion.getId() == cuenta.getId())) { %> 
+        <div class="container">
+            <h2>Mis Cursos</h2>
+            <% ArrayList<CursoInscrito> cursosInscritos = CursoInscrito.ObtenerCI(id);
+            if (cursosInscritos.size() > 0){
+                for (CursoInscrito ci : cursosInscritos  ){%>
+            <article>
+                <table width="100%"> 
+                    <tr>
+                        <td width="100px">
+                            <%
+                            File fotoC = new File(contextPath + "../../web/subida/cursos/" + ci.getCurso().getIdCurso()+ ".jpg");
+                            if (fotoC.exists()) { %>
+                            <div id="photo" style="background-image: url('subida/cursos/<%=ci.getCurso().getIdCurso() %>.jpg');"></div>
+                            <% } else { %>
+                            <div id="photo"></div>
+                            <% } %>
+                        </td>
+                        <td>
+                            <strong><%= ci.getCurso().getNombre() %></strong><br><%= ci.getCurso().getDesc()%>
+                        </td>
+                    </tr>
+                </table>
+            </article>
+            <% } } else { %>
+            Este Empelador no cuenta con Cursos
+            <% } %>
+        </div>      
+        <% } %>
                     
         <% } else if (cuenta.esReclutador()) {
         Reclutador perfil = Reclutador.obtenerCuenta(id); %>
@@ -167,10 +185,34 @@ try {
                 
             </table>
         </div>
-                    
-                    <div class="container">
-                        <h2>Cursos Disponibles</h2>
-                    </div>
+
+        <div class="container">
+             <h2>Cursos Disponibles</h2>
+             <% ArrayList<CursoComprado> cursosComprados = CursoComprado.ObtenerC(id);
+             if (cursosComprados.size() > 0) {
+                for (CursoComprado cc : cursosComprados ){%>
+            <article>
+                <table width="100%"> 
+                    <tr>
+                        <td width="100px">
+                        <% File fotoC = new File(contextPath + "../../web/subida/cursos/" + cc.getCurso().getIdCurso()+ ".jpg");
+                        if (fotoC.exists()) { %>
+                            <div id="photo" style="background-image: url('subida/cursos/<%=cc.getCurso().getIdCurso() %>.jpg');"></div>
+                        <% } else { %>
+                            <div id="photo"></div>
+                        <% } %>
+                        </td>
+                        <td>
+                            <strong><%= cc.getCurso().getNombre() %></strong><br><%= cc.getCurso().getDesc()%>
+                            <center><a href="curso.jsp?c=<%= cc.getId() %>"><button type="submit" name="boton" value="inscrito">Inscribirse</button></a></center> 
+                        </td>
+                    </tr>
+                </table>
+            </article>
+            <% } } else { %>
+            Este Reclutador no cuenta con Cursos
+            <% } %>
+        </div>
                     
         <% } else if (cuenta.esCapacitador()) {
         Capacitador perfil = Capacitador.obtenerCuenta(id); %>

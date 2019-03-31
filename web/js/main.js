@@ -77,7 +77,7 @@ $(window).on('load', function() {
     $(window).on('keyup', { keys: 'alt+shift+c' }, function () { window.location = "cursos.jsp"; });
     $(window).on('keyup', { keys: 'alt+shift+m' }, function () { window.location = "mensajes.jsp"; });
     $(window).on('keyup', { keys: 'alt+shift+p' }, function () { window.location = "planes.jsp"; });
- 
+    $(window).on('keyup', { keys: 'alt+shift+h' }, function () { window.location = "contacto.jsp"; });
 });
 
 $('input[name=tipo]').on('change', function() {
@@ -116,12 +116,27 @@ $('#evaluar i').on('click', function() {
     { 
        c: calif, 
        co: comen,
-       idCuenta: $("#idCuenta").val(),
+       idCuenta: $("#idCuenta").val(), //recuperar el input y luego el valor
        idEvalu: $("#idEvalu").val()
        
     }, function(data, status) {
-        alertify.success(data);
+        alertify.success(data); //alertify no es nativa, es una libreria
         window.location.reload();
     });
 });
 
+$('#inscribirte').on('click', function() { 
+    if(confirm('¿Estas seguro de inscribirte?')){
+        var cue = $("#cue").val(); 
+        var cur = $("#cur").val();
+        
+        $.post('/InscribirseC', {
+            //Aqui voy a mandra toda la informacion que hay en el servlet
+            idCuenta: cue,
+            idCurso: cur
+        }, function(data, status) {
+            alertify.success(data);
+            //window.location.reload();
+        }); //PUSE POST PARA AJAX JEJE 
+    }
+ });

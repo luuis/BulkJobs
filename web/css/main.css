@@ -334,7 +334,7 @@ body.landing video {
         box-sizing: border-box;
     }
     
-    #content section.one *, #content section.two * {
+    #content section.one > *, #content section.two > * {
         max-width: 100%;
     }
     

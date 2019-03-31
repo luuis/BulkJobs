@@ -95,14 +95,15 @@ public class Cuenta {
     public int registro() {
         ConexionBD objCBD = new ConexionBD("bolsadetrabajo");
         ArrayList instBD = new ArrayList();
-        instBD.add("INSERT INTO cuenta VALUES(null, ?, ?, ?, ?, 1)");
+        instBD.add("INSERT INTO cuenta VALUES(null, ?, ?, ?, ?, 0)");
         instBD.add(rol);
         instBD.add(correo);
         instBD.add(contrasena);
         instBD.add(salt);
         int ibd = objCBD.ejecutarABC(instBD);
         if (ibd > 0) {
-            return objCBD.ultimoId(); 
+            id = objCBD.ultimoId();
+            return id; 
         }
         return 0;
     }
