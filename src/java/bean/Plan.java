@@ -4,7 +4,6 @@ import extra.ConexionBD;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -17,11 +16,11 @@ public class Plan {
    private int idPlan;
    private String nombre;
    private String descripcion;
-   private double precio;
+   private float precio;
    private int vacantes;
    private int tiempo;
 
-    public Plan(int idPlan, String nombre, String descripcion, double precio, int vacantes, int tiempo) {
+    public Plan(int idPlan, String nombre, String descripcion, float precio, int vacantes, int tiempo) {
         this.idPlan = idPlan;
         this.nombre = nombre;
         this.descripcion = descripcion;
@@ -30,16 +29,13 @@ public class Plan {
         this.tiempo = tiempo;
     }
 
-    public Plan(String nombre, String descripcion, double precio, int vacantes, int tiempo) {
+    public Plan(String nombre, String descripcion, float precio, int vacantes, int tiempo) {
         this.nombre = nombre;
         this.descripcion = descripcion;
         this.precio = precio;
         this.vacantes = vacantes;
         this.tiempo = tiempo;
     }
-   
-    
-    
     
     /**
      * @return the idPlan
@@ -86,14 +82,14 @@ public class Plan {
     /**
      * @return the precio
      */
-    public double getPrecio() {
+    public float getPrecio() {
         return precio;
     }
 
     /**
      * @param precio the precio to set
      */
-    public void setPrecio(double precio) {
+    public void setPrecio(float precio) {
         this.precio = precio;
     }
 
@@ -138,11 +134,14 @@ public class Plan {
         int registrado = objCBD.ejecutarABC(instBD);
         
         if(registrado > 0){
+            idPlan = objCBD.ultimoId(); //una vez registrado se recupera y guardo jeje
+            objCBD.cerrarConexion();
+            
             return  true;
         }
         
+        objCBD.cerrarConexion();
         return false;
-        
     }
    
     public static ArrayList obtenerPlanes(){
@@ -156,7 +155,7 @@ public class Plan {
             objCBD.consultar(instBD);
             ResultSet rs = objCBD.getCdr();
             while (rs.next()) {
-                plan = new Plan(rs.getInt("id_plan"), rs.getString("plan_nombre"), rs.getString("plan_descripcion"), rs.getDouble("plan_precio"), rs.getInt("plan_num_vacantes"), rs.getInt("plan_tiempo"));
+                plan = new Plan(rs.getInt("id_plan"), rs.getString("plan_nombre"), rs.getString("plan_descripcion"), rs.getFloat("plan_precio"), rs.getInt("plan_num_vacantes"), rs.getInt("plan_tiempo"));
                 planes.add(plan);
             }
         } catch (SQLException ex) {
@@ -190,7 +189,7 @@ public class Plan {
             objCBD.consultar(instBD);
             ResultSet rs = objCBD.getCdr();
             while (rs.next()) {
-                plan = new Plan(rs.getInt("id_plan"), rs.getString("plan_nombre"), rs.getString("plan_descripcion"), rs.getDouble("plan_precio"), rs.getInt("plan_num_vacantes"), rs.getInt("plan_tiempo"));
+                plan = new Plan(rs.getInt("id_plan"), rs.getString("plan_nombre"), rs.getString("plan_descripcion"), rs.getFloat("plan_precio"), rs.getInt("plan_num_vacantes"), rs.getInt("plan_tiempo"));
      
             }
         } catch (SQLException ex) {

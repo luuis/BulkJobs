@@ -81,7 +81,7 @@ public class PlanComprado {
     }
     //</editor-fold>
     
-    //<editor-fold defaultstate="collapsed" desc="Método">
+    //<editor-fold defaultstate="collapsed" desc="Métodos">
     public static PlanComprado obtenerPlanComprado(int id) {
         PlanComprado planComprado = null;
         try {
@@ -111,12 +111,48 @@ public class PlanComprado {
         instBD.add(sdf.format(fechaLimite));
         int registrar = objCBD.ejecutarABC(instBD);
         
-        
         if(registrar > 0){
             return true;
         }
         
         return false;
+    }
+     
+    public static ArrayList<PlanComprado> obtenerPlanCompradoRecl(int cuenta){
+        ArrayList<PlanComprado> planComprado = new ArrayList<>();
+        try {
+            ConexionBD objCBD = new ConexionBD("bolsadetrabajo");
+            ArrayList instBD = new ArrayList();
+            instBD.add("SELECT * FROM plan_comprado WHERE plco_cuenta = ?");
+            instBD.add(cuenta);
+            objCBD.consultar(instBD);
+            ResultSet rs = objCBD.getCdr();
+            while (rs.next()) {
+                PlanComprado p = new PlanComprado(rs.getInt(1), Plan.obtenerPlan(rs.getInt(2)), Reclutador.obtenerCuenta(rs.getInt(3)), rs.getDate(4), rs.getDate(5));
+                planComprado.add(p);
+            } 
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+        return planComprado;
+    }
+    
+    public static boolean renovarPlan(int id, Date fechaLimite){
+        ConexionBD objCBD = new ConexionBD("bolsadetrabajo");
+        ArrayList instBD = new ArrayList();
+        instBD.add("UPDATE plan_comprado SET plco_fecha_limite = ? WHERE id_plan_comprado = ?");
+        
+        SimpleDateFormat sdf = new SimpleDateFormat("YYYY/MM/dd HH:mm:ss");
+        instBD.add(sdf.format(fechaLimite));
+        instBD.add(id);
+        
+        int agregar = objCBD.ejecutarABC(instBD);
+        
+        if(agregar > 0){
+            return true;
+        }
+        
+        return false; 
     }
 //</editor-fold>
 }

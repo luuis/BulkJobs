@@ -35,17 +35,14 @@ public class Vacante {
         this.fecha = fecha;
     }
 
-    public Vacante(String titulo, String detalles, String requisitos, double paga, String tipoPaga, Categoria categoria) {
+    public Vacante(String titulo, String detalles, String requisitos, double paga, String tipoPaga, Categoria categoria, PlanComprado compra) {
         this.titulo = titulo;
         this.detalles = detalles;
         this.requisitos = requisitos;
         this.paga = paga;
         this.tipoPaga = tipoPaga;
-        this.estado = estado;
         this.categoria = categoria;
-        
-        
-        
+        this.compra = compra;
     }
     //</editor-fold>
 
@@ -197,9 +194,11 @@ public class Vacante {
      public boolean agregarVa(){
         ConexionBD objCBD = new ConexionBD("bolsadetrabajo");
         ArrayList instBD = new ArrayList(); 
-        instBD.add("INSERT INTO vacante VALUES(null, ?, 1, ?, ?, ?, ?, ?, 1,now())");
+        instBD.add("INSERT INTO vacante VALUES(null, ?, ?, ?, ?, ?, ?, ?, 1, NOW())");
         instBD.add(categoria.getId());
         System.out.println(categoria.getId());
+        instBD.add(compra.getId());
+        System.out.println(compra.getId());
         instBD.add(titulo);
         System.out.println(titulo);  
         instBD.add(detalles); 
@@ -215,12 +214,49 @@ public class Vacante {
         int registrado = objCBD.ejecutarABC(instBD);
         
         if(registrado > 0){
+            id = objCBD.ultimoId(); //una vez registrado se recupera y guardo jeje
             return  true;
         }
         
         return false; 
     }
     
+    public static ArrayList<Vacante> obtenerVacantesReclutador(int reclutador) {
+        ArrayList<Vacante> vacantes = new ArrayList(); 
+        try {
+            ConexionBD objCBD = new ConexionBD("bolsadetrabajo");
+            ArrayList instBD = new ArrayList();
+            instBD.add("SELECT * FROM vacante INNER JOIN plan_comprado ON vaca_compra = id_plan_comprado WHERE plco_cuenta = ?");
+            instBD.add(reclutador);
+            objCBD.consultar(instBD);
+            ResultSet rs = objCBD.getCdr();
+            while (rs.next()) {
+                Vacante v = new Vacante(rs.getInt(1), rs.getString(4), rs.getString(5), rs.getString(6), rs.getDouble(7), rs.getString(8), rs.getInt(9), Categoria.obtenerCategoria(rs.getInt(2)), PlanComprado.obtenerPlanComprado(rs.getInt(3)), rs.getDate(10));
+                vacantes.add(v);
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+        return vacantes;
+    }
     
-//</editor-fold>
+    public static ArrayList<Vacante> obtenerVacantesDelPlan(int plan) {
+        ArrayList<Vacante> vacantes = new ArrayList(); 
+        try {
+            ConexionBD objCBD = new ConexionBD("bolsadetrabajo");
+            ArrayList instBD = new ArrayList();
+            instBD.add("SELECT * FROM vacante WHERE vaca_compra = ?");
+            instBD.add(plan);
+            objCBD.consultar(instBD);
+            ResultSet rs = objCBD.getCdr();
+            while (rs.next()) {
+                Vacante v = new Vacante(rs.getInt(1), rs.getString(4), rs.getString(5), rs.getString(6), rs.getDouble(7), rs.getString(8), rs.getInt(9), Categoria.obtenerCategoria(rs.getInt(2)), PlanComprado.obtenerPlanComprado(rs.getInt(3)), rs.getDate(10));
+                vacantes.add(v);
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+        return vacantes;
+    }
+    //</editor-fold>
 }

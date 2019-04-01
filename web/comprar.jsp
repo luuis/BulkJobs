@@ -1,3 +1,5 @@
+<%@page import="java.text.DateFormat"%>
+<%@page import="java.text.SimpleDateFormat"%>
 <%@page import="bean.PlanPComprado"%>
 <%@page import="bean.PlanP"%>
 <%@page import="java.util.Date"%>
@@ -98,6 +100,35 @@
                 }
             } else {
                 out.println("<script>alertify.error('La tarjeta no existe');</script>");
+            }    
+        } else if(request.getParameter("tipo").equals("RenovarPlan")) {
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            Date fl = sdf.parse(request.getParameter("limite"));
+            
+            fl.setTime(fl.getTime() + (Long.parseLong(request.getParameter("tiempo")) * 1000)); 
+            
+            Tarjeta t = Tarjeta.obtenerTarjeta(Long.parseLong(request.getParameter("numero")));
+            
+            if (t != null) {
+                System.out.println(t.getSaldo());
+                System.out.println(request.getParameter("total"));
+                
+                if (t.getSaldo() >= Double.parseDouble(request.getParameter("total"))) {
+                    boolean registrado = PlanComprado.renovarPlan(Integer.parseInt(request.getParameter("id")), fl);
+                
+                    if (registrado) {
+                        out.println("<script>alertify.success('Se ha renovado');</script>");
+                        t.quitarSaldo(Double.parseDouble(request.getParameter("total")));
+
+                        Movimiento.registrar(t, "Pago de renovacion: Plan", Double.parseDouble(request.getParameter("total")));
+                    } else {
+                         out.println("<script>alertify.error('No se ha renovado');</script>");
+                    }
+                } else {
+                    out.println("<script>alertify.error('No tines saldo suficiente, intente con otra');</script>");
+                }
+            } else {
+                out.println("<script>alertify.error('La tarjeta no existe');</script>");
             }
         }
     } %>
@@ -147,17 +178,17 @@
                 <div id="card"> 
                     <div class="side front"> 
                         <div class="card_logo" id="none"></div>
-                        <p class="card_number"><span class="help" id="cardNumber">1234 5678 1234 5678</span></p>
+                        <p class="card_number"><span class="help" id="cardNumber" data-ot="1234 5678 1234 5678">1234 5678 1234 5678</span></p>
                         <div class="space-75">
                             <span class="label">Titular de la tarjeta</span>
                             <p class="info">
-                                <span class="help" id="cardHolder">Andrés Manuel López Obrador</span>
+                                <span class="help" id="cardHolder" data-ot="Andrés Manuel López Obrador">Andrés Manuel López Obrador</span>
                             </p>
                         </div>
                         <div class="space-25">
                             <span class="label">Expira</span>
                             <p class="info">
-                                <span class="help" id="cardMonth">04</span>/<span class="help" id="cardYear">19</span>
+                                <span class="help" id="cardMonth" data-ot="04">04</span>/<span class="help" id="cardYear" data-ot="19">19</span>
                             </p>
                         </div>
                     </div> 
@@ -165,7 +196,7 @@
                         <div class="black-line"></div>
                         <div class="back-content">
                             <div class="secret">
-                                <p class="secret--last"><span class="help" id="cardCCV">123</span></p>
+                                <p class="secret--last"><span class="help" id="cardCCV" data-ot="123">123</span></p>
                             </div>
                         </div>
                     </div> 
@@ -182,6 +213,29 @@
                         } else {
                             $("#card").flip(true);
                         }
+                    });
+                    
+                    $(".cardHelper").on('keypress change blur', function () {
+                        var val = $(this).val();
+                        var el = $(this).data("el");
+                        var ot = $(this).data("ot");
+                        
+                        if (val > 0) {
+                            if (el === cardNumber) {
+                                val = val.replace(/[^a-z0-9]+/gi, "").replace(/(.{4})/g, "$1");
+                                $(".help#"+el).val(val);
+                            } else {
+                                $(".help#"+el).val(val);
+                            }
+                        } else {
+                            $(".help#"+el).val(ot);
+                        }
+                    });
+                    
+                    $(".cardHelper").on("copy cut paste", function () {
+                        setTimeout(function() {
+                            $(this).trigger("change");
+                        });
                     });
                     
                     $('input[name=numero]').validateCreditCard(function(result) {
@@ -230,7 +284,6 @@
                     <td>Plan: <%=p.getNombre()%></td>
                     <td><%=p.getPrecio()%></td>
                 </tr>
-                
                 <tr>
                     <td>Tiempo:</td>
                     <td><%=p.getTiempo()%></td>
@@ -275,6 +328,39 @@
                 <% } else {
                     response.sendRedirect("planesp.jsp");
                 }
+            } else if(request.getParameter("rp") != null) { // Renovar plan
+                PlanComprado rp = PlanComprado.obtenerPlanComprado(Integer.parseInt(request.getParameter("rp")));
+                if (rp != null) { %>
+            <table width="100%">
+                <tr>
+                    <th>Concepto</th>
+                    <th>Precio</th>
+                </tr>
+                <tr>
+                    <td>Renovación del Plan: <%=rp.getPlan().getNombre()%></td>
+                    <td><%=rp.getPlan().getPrecio()%></td>
+                </tr>
+                <tr>
+                    <td>Tiempo:</td>
+                    <td><%=rp.getPlan().getTiempo()%> más</td>
+                </tr>
+                <tr>
+                    <th>Total</th>
+                    <td><%=rp.getPlan().getPrecio()%></td>
+                </tr>
+            </table>
+            <input type="text" name="tipo" value="RenovarPlan">
+            <input type="text" name="id" value="<%=rp.getId() %>">
+            <input type="text" name="tiempo" value="<%=rp.getPlan().getTiempo()%>">
+            <% SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy-MM-dd HH-mm-ss");
+            String x = sdf2.format(rp.getFechaLimite()); %>
+            <input type="text" name="limite" value="<%=x%>">
+            <input type="text" name="total" value="<%=rp.getPlan().getPrecio()%>">
+                <% } else {
+                    response.sendRedirect("vacantes.jsp");
+                }
+            } else {
+                 response.sendRedirect("index.jsp");
             } %>
             <center><button type="submit" name="comprar">
                 <i class="fas fa-shopping-cart"></i> Pagar

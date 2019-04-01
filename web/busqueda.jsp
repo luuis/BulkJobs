@@ -1,3 +1,5 @@
+<%@page import="bean.PlanPComprado"%>
+<%@page import="bean.FeriaDeEmpleo"%>
 <%@page import="bean.Categoria"%>
 <%@page import="java.util.ArrayList"%>
 <%@page import="bean.Vacante"%>
@@ -62,6 +64,12 @@
                 <a href="<%=ppc.getVinculo()%>" target="_blank">
                     <img src="subida/publicidad/<%=ppc.getId()%>.jpg" width="100%" height="300px">
                 </a>
+            </div>
+        <% }
+        FeriaDeEmpleo fde = FeriaDeEmpleo.obtenerFeria();
+        if(fde != null){ %>
+            <div class="container">
+                <div id="photo" title="<%= fde.getNombre()%>" style="background-image: url('subida/ferias/<%=fde.getIdFeria()%>.jpg');"></div> 
             </div>
         <% } %>
     </div>
