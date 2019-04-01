@@ -17,7 +17,7 @@
     <jsp:param name="titulo" value="Compra" />
     <jsp:param name="roles" value="reclutador" />
 </jsp:include>
-    <form action="" method="post"  autocomplete="off" data-parsley-errors-messages-disabled class="validate">
+<form action="" method="post" autocomplete="off" data-parsley-errors-messages-disabled class="validate">
 <section class="two small">
     <% if (request.getParameter("comprar") != null) {
         if (request.getParameter("tipo").equals("curso")) {
@@ -26,8 +26,6 @@
             Tarjeta t = Tarjeta.obtenerTarjeta(Long.parseLong(request.getParameter("numero")));
             
             if (t != null) {
-                System.out.println(t.getSaldo());
-                System.out.println(request.getParameter("total"));
                 if (t.getSaldo() >= Double.parseDouble(request.getParameter("total"))) {
                     boolean registrado = cc.registrarC();
             
@@ -43,7 +41,7 @@
                     out.println("<script>alertify.error('No tines saldo suficiente, intente con otra');</script>");
                 }
             } else {
-                out.println("<script>alertify.error('La tarjeta no existe');</script>");
+                out.println("<script>alertify.error('Comprueba los datos de la tarjeta e intentelo de nuevo');</script>");
             }
         } else if (request.getParameter("tipo").equals("plan")) {
             Date fl = new Date();
@@ -53,9 +51,6 @@
             Tarjeta t = Tarjeta.obtenerTarjeta(Long.parseLong(request.getParameter("numero")));
             
             if (t != null) {
-                System.out.println(t.getSaldo());
-                System.out.println(request.getParameter("total"));
-                
                 if (t.getSaldo() >= Double.parseDouble(request.getParameter("total"))) {
                     boolean registrado = pc.registrarC();
                 
@@ -70,7 +65,7 @@
                     out.println("<script>alertify.error('No tines saldo suficiente, intente con otra');</script>");
                 }
             } else {
-                out.println("<script>alertify.error('La tarjeta no existe');</script>");
+                out.println("<script>alertify.error('Comprueba los datos de la tarjeta e intentelo de nuevo');</script>");
             }
         } else if (request.getParameter("tipo").equals("planp")) {
             Date fl = new Date(); /*Primero obtenga la fecha actual(sistema) y lo guardo en fecha limite*/
@@ -82,9 +77,6 @@
             Tarjeta t = Tarjeta.obtenerTarjeta(Long.parseLong(request.getParameter("numero")));
             
             if (t != null) {
-                System.out.println(t.getSaldo());
-                System.out.println(request.getParameter("total"));
-                
                 if (t.getSaldo() >= Double.parseDouble(request.getParameter("total"))) {
                     boolean registrado = ppc.registrarPPC();
                 
@@ -99,7 +91,7 @@
                     out.println("<script>alertify.error('No tines saldo suficiente, intente con otra');</script>");
                 }
             } else {
-                out.println("<script>alertify.error('La tarjeta no existe');</script>");
+                out.println("<script>alertify.error('Comprueba los datos de la tarjeta e intentelo de nuevo');</script>");
             }    
         } else if(request.getParameter("tipo").equals("RenovarPlan")) {
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
@@ -110,9 +102,6 @@
             Tarjeta t = Tarjeta.obtenerTarjeta(Long.parseLong(request.getParameter("numero")));
             
             if (t != null) {
-                System.out.println(t.getSaldo());
-                System.out.println(request.getParameter("total"));
-                
                 if (t.getSaldo() >= Double.parseDouble(request.getParameter("total"))) {
                     boolean registrado = PlanComprado.renovarPlan(Integer.parseInt(request.getParameter("id")), fl);
                 
@@ -128,7 +117,7 @@
                     out.println("<script>alertify.error('No tines saldo suficiente, intente con otra');</script>");
                 }
             } else {
-                out.println("<script>alertify.error('La tarjeta no existe');</script>");
+                out.println("<script>alertify.error('Comprueba los datos de la tarjeta e intentelo de nuevo');</script>");
             }
         }
     } %>
@@ -154,12 +143,12 @@
             </p>
             <p>
                 <label>Fecha de vencimiento <font color="red">*</font></label>
-                <input type="number" name="mes" class="cardHelper" required
+                <input type="number" name="mes" class="cardHelper zeroLeading" required
                    data-el="cardMonth" data-side="front" placeholder="Mes"
-                   data-parsley-maxlength="2" maxlength="2" min="1" max="12"
-                   data-parsley-minlength="2" minlength="2" value="1"
+                   data-parsley-maxlength="2" maxlength="2" min="01" max="12"
+                   data-parsley-minlength="2" minlength="2" value="01"
                    data-parsley-required-message="Debes ingresar el mes de vencimiento">
-                <input type="number" name="anio" class="cardHelper" required
+                <input type="number" name="anio" class="cardHelper zeroLeading" required
                    data-el="cardYear" data-side="front" placeholder="Año"
                    data-parsley-maxlength="2" maxlength="2" min="19" max="99"
                    data-parsley-minlength="2" minlength="2" value="19"
@@ -202,8 +191,9 @@
                     </div> 
                 </div> 
                 <script>
-                $(function($) {
+                $(function() {
                     $("#card").flip({ trigger: 'manual' });
+                    
                     $(".cardHelper").on('focus', function () {
                         var el = $(this).data("el");
                         $(".help").removeClass("highlight");
@@ -215,20 +205,18 @@
                         }
                     });
                     
-                    $(".cardHelper").on('keypress change blur', function () {
+                    $(".cardHelper").on('keyup change blur', function () {
                         var val = $(this).val();
                         var el = $(this).data("el");
                         var ot = $(this).data("ot");
                         
-                        if (val > 0) {
-                            if (el === cardNumber) {
-                                val = val.replace(/[^a-z0-9]+/gi, "").replace(/(.{4})/g, "$1");
-                                $(".help#"+el).val(val);
-                            } else {
-                                $(".help#"+el).val(val);
+                        if (val.length > 0) {
+                            if (el === "cardNumber") {
+                                val = val.replace(/(\d{4})/g, '$1 ').replace(/(^\s+|\s+$)/,'');
                             }
+                            $(".help#"+el).text(val);
                         } else {
-                            $(".help#"+el).val(ot);
+                            $(".help#"+el).text(ot);
                         }
                     });
                     
@@ -240,6 +228,12 @@
                     
                     $('input[name=numero]').validateCreditCard(function(result) {
                         $('.card_logo').prop("id", (result.card_type === null ? 'none' : result.card_type.name));
+                    });
+                    
+                    $('.zeroLeading').on('change', function () {
+                        if ($(this).val().length < 2) {
+                            $(this).val("0" + $(this).val());
+                        }
                     });
                 });
                 </script>

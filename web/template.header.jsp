@@ -24,7 +24,7 @@ Sesion sh = (Sesion) session.getAttribute("sesion"); %>
         <link rel="stylesheet" href="css/alertify.min.css">
         <link rel="stylesheet" href="css/all.min.css">
         <link rel="stylesheet" href="css/tippy.css">
-        <link rel="stylesheet" href="css/main.css">
+        <link rel="stylesheet" href="css/main.css?<%=System.currentTimeMillis()%>">
         <script src="js/jquery.min.js"></script>
         <script src="js/jquery.form.min.js"></script>
         <script src="js/jquery.creditCardValidator.js"></script>

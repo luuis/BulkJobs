@@ -180,7 +180,7 @@ public class Capacitador extends Cuenta {
         try {
             ConexionBD objCBD = new ConexionBD("bolsadetrabajo");
             ArrayList instBD = new ArrayList();
-            instBD.add("SELECT * FROM cuenta INNER JOIN capacitador WHERE capa_cuenta = ?");
+            instBD.add("SELECT * FROM cuenta INNER JOIN capacitador ON capa_cuenta=id_cuenta WHERE capa_cuenta = ?");
             instBD.add(id);
             objCBD.consultar(instBD);
             ResultSet rs = objCBD.getCdr();

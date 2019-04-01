@@ -105,6 +105,7 @@ public class PlanComprado {
         ArrayList instBD = new ArrayList();
         instBD.add("INSERT INTO plan_comprado VALUES (NULL, ?, ?, now(), ?)");
         instBD.add(plan.getIdPlan());
+        System.out.println(cuenta.getId());
         instBD.add(cuenta.getId());
         SimpleDateFormat sdf = new SimpleDateFormat("YYYY/MM/dd HH:mm:ss");
         

@@ -262,7 +262,7 @@ public class Empleador extends Cuenta {
         try {
             ConexionBD objCBD = new ConexionBD("bolsadetrabajo");
             ArrayList instBD = new ArrayList();
-            instBD.add("SELECT * FROM cuenta INNER JOIN empleador WHERE empl_cuenta = ?");
+            instBD.add("SELECT * FROM cuenta INNER JOIN empleador ON empl_cuenta=id_cuenta WHERE empl_cuenta = ?");
             instBD.add(id);
             objCBD.consultar(instBD);
             ResultSet rs = objCBD.getCdr();

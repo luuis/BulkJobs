@@ -180,7 +180,7 @@ public class Reclutador extends Cuenta {
         try {
             ConexionBD objCBD = new ConexionBD("bolsadetrabajo");
             ArrayList instBD = new ArrayList();
-            instBD.add("SELECT * FROM cuenta INNER JOIN reclutador WHERE recl_cuenta = ?");
+            instBD.add("SELECT * FROM cuenta INNER JOIN reclutador ON recl_cuenta=id_cuenta WHERE recl_cuenta = ?");
             instBD.add(id);
             objCBD.consultar(instBD);
             ResultSet rs = objCBD.getCdr();
