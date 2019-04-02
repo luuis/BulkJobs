@@ -1,3 +1,8 @@
+<%@page import="bean.Empleador"%>
+<%@page import="bean.Curriculum"%>
+<%@page import="java.sql.ResultSet"%>
+<%@page import="java.util.ArrayList"%>
+<%@page import="extra.ConexionBD"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <% Sesion sesion = (Sesion) session.getAttribute("sesion"); %>
 <jsp:include page="template.header.jsp">
@@ -39,7 +44,19 @@
             });
         });
         </script>
-        <% }  else if (request.getParameter("a").equalsIgnoreCase("generar")) { %>
+        <% }  else if (request.getParameter("a").equalsIgnoreCase("generar")) {
+            ConexionBD objCBD = new ConexionBD("bolsadetrabajo");
+            Curriculum curr = null;
+            if (request.getParameter("actualizar") != null) {
+                ArrayList instBD = new ArrayList();
+                instBD.add("SELECT * FROM curriculum WHERE curr_cuenta = ? && curr_archivo IS NULL ORDER BY id_curriculum DESC LIMIT 1");
+                instBD.add(sesion.getId());
+                objCBD.consultar(instBD);
+                ResultSet rs = objCBD.getCdr();
+                while (rs.next()) {
+                    curr = new Curriculum(rs.getInt(1), Empleador.obtenerCuenta(rs.getInt(2)), rs.getString(3), rs.getDate(4));
+                }
+            } %>
         <script>
             $(function() {
                 $('.addRow').on('click', function() {
@@ -85,7 +102,7 @@
                     <label><input type="radio" name="secc" data-secc="rp"> Referencias personales</label>
                 </p>
                 <p>
-                    <button type="button" id="botonGenerar" value="generar">Generar</button>
+                    <button type="submit" id="botonGenerar" value="generar">Generar</button>
                 </p>
             </center>
         </div>
@@ -97,6 +114,62 @@
                 <button type="button" class="removeRow" data-cv="el"><i class="fas fa-times"></i> Quitar 1</button>
             </center>
             <center id="cvel">
+                <% if (curr != null) {
+                ArrayList instBD = new ArrayList();
+                instBD.add("SELECT * FROM cv_experiencia_laboral WHERE cvel_curriculum = ?");
+                instBD.add(curr.getId());
+                objCBD.consultar(instBD);
+                ResultSet rs = objCBD.getCdr();
+                while (rs.next()) { %>
+                <table>
+                    <tr>
+                        <th><label>Nombre de la empresa: <font color="red">*</font></label></th>
+                        <td><input type="text" required name="cvel_nombre_empresa" value="<%=rs.getString("cvel_nombre_empresa")%>" maxlength="50"></td>
+                        <th><label>Puesto: <font color="red">*</font></label></th>
+                        <td><input type="text" required name="cvel_puesto" value="<%=rs.getString("cvel_puesto")%>" maxlength="50"></td>
+                    </tr>
+                    <tr>
+                        <th><label>Año inicio: <font color="red">*</font></label></th>
+                        <td>
+                            <select name="cvel_anio_inicio">
+                                <% for(int ai=2019; ai>=1950; ai--) { %>
+                                <option <%=(rs.getInt("cvel_anio_inicio") == ai) ? "selected" : ""%>><%=ai%></option>
+                                <% } %>
+                            </select>
+                        </td>
+                        <th><label>Año fin: <font color="red">*</font></label></th>
+                        <td>
+                            <select name="cvel_anio_fin">
+                                <% for(int ai=2019; ai>=1950; ai--) { %>
+                                <option <%=(rs.getInt("cvel_anio_fin") == ai) ? "selected" : ""%>><%=ai%></option>
+                                <% } %>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th><label>Nombre del jefe: <font color="red">*</font></label></th>
+                        <td><input type="text" required value="<%=rs.getString("cvel_nombre_jefe")%>" name="cvel_nombre_jefe" maxlength="100"></td>
+                        <td><input type="text" required value="<%=rs.getString("cvel_app_jefe")%>" name="cvel_app_jefe" maxlength="100"></td>
+                        <td><input type="text" required value="<%=rs.getString("cvel_apm_jefe")%>" name="cvel_apm_jefe" maxlength="100"></td>
+                    </tr>
+                    <tr>
+                        <th><label>Telefono: <font color="red">*</font></label></th>
+                        <td><input type="tel" required value="<%=rs.getString("cvel_telefono")%>" name="cvel_telefono" maxlength="10"></td>
+                        <th><label>Funciones realizadas: <font color="red">*</font></label></th>
+                        <td><input type="text" required value="<%=rs.getString("cvel_funciones")%>" name="cvel_funciones" maxlength="200"></td>
+                    </tr>
+                    <tr>
+                        <th rowspan="2">Dirección</th>
+                        <td><input type="text" value="<%=rs.getString("cvel_dir_num_ext")%>" name="cvel_dir_num_ext" placeholder="Número exterior" maxlength="50"></td>
+                        <td><input type="text" value="<%=rs.getString("cvel_dir_num_int")%>" name="cvel_dir_num_int" placeholder="Número interior" maxlength="50"></td>
+                    </tr>
+                    <tr>
+                        <td rowspan="2"><input type="text" required value="<%=rs.getString("cvel_dir_localidad")%>" name="cvel_dir_localidad" placeholder="Localidad (*)" maxlength="50"></td>
+                        <td><input type="text" required value="<%=rs.getString("cvel_dir_municipio")%>" name="cvel_dir_municipio" placeholder="Municipio (*)" maxlength="50"></td>
+                        <td><input type="text" required value="<%=rs.getString("cvel_dir_estado")%>" name="cvel_dir_estado" placeholder="Estado (*)" maxlength="50"></td>
+                    </tr>
+                </table>
+                <% } } else { %>
                 <table>
                     <tr>
                         <th><label>Nombre de la empresa: <font color="red">*</font></label></th>
@@ -145,6 +218,7 @@
                         <td><input type="text" required name="cvel_dir_estado" placeholder="Estado (*)" maxlength="50"></td>
                     </tr>
                 </table>
+                <% } %>
             </center>
         </div>
         

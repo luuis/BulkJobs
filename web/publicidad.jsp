@@ -38,26 +38,19 @@
                             <h4>Plan <%= pp.getPlanc().getNombre()%> &middot;
                                 Comprado el <%=pp.getFecha() %> &middot;
                                 Caduca el <%=pp.getFechaF()%> - Activo</h4>
-                                <p>X<p>
                         </td>
-                        
-                        
-                        
                         <td style="text-align: right">
-                            <a href="comprar.jsp?rp=<%=pp.getId()%>"><button type="button"><i class="far fa-clock"></i> Agregar Tiempo</button></a>
+                            <a href="planpc_editar.jsp?i=<%=pp.getId()%>"><button><i class="fas fa-edit"></i> Editar</button></a>
+                            <a href="comprar.jsp?ri=<%=pp.getId()%>"><button type="button"><i class="far fa-clock"></i> Agregar Tiempo</button></a>
                         </td>  
                         <% } else { %>
                         <td>
                             <h4>Plan <%= pp.getPlanc().getNombre()%> &middot;Caducado
-                                <p>X</p>
                         </td>
-                        
-                        
-                        
                         <td style="text-align: right">
-                            <a href="comprar.jsp?rp=<%=pp.getId()%>"><button type="button"><i class="far fa-clock"></i> Renovar</button></a>
+                            <a href="planpc_editar.jsp?i=<%=pp.getId()%>"><button><i class="fas fa-edit"></i> Editar</button></a>
+                            <a href="comprar.jsp?ri=<%=pp.getId()%>"><button type="button"><i class="far fa-clock"></i> Renovar</button></a>
                         </td> 
-                        
                         <% } %>
                     </tr>
                 </table>
@@ -70,9 +63,6 @@
                     %>
             
         </div>   
-        
-        
-        
         
 </section>
 <%@include file="template.footer.jsp" %> 

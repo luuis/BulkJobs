@@ -81,13 +81,18 @@ if (v != null) { %>
                     <a href="curriculum.jsp?a=subir&v=<%=v.getId()%>">
                         <button type="button"><i class="fas fa-file-upload"></i> Subir</button>
                     </a>
+                    <% if (curriculum != null) { %>
                     <a href="curriculum.jsp?a=generar&v=<%=v.getId()%>">
-                        <% if (curriculum != null) { %>
-                        <button type="button"><i class="fas fa-file"></i> Actualizar</button>
-                        <% } else { %>
-                        <button type="button"><i class="fas fa-file-medical"></i> Crear</button>
-                        <% } %>
+                        <button type="button"><i class="fas fa-file"></i> Crear</button>
                     </a>
+                    <a href="curriculum.jsp?a=generar&v=<%=v.getId()%>&actualizar">
+                        <button type="button"><i class="fas fa-file"></i> Actualizar</button>
+                    </a>
+                    <% } else { %>
+                    <a href="curriculum.jsp?a=generar&v=<%=v.getId()%>">
+                        <button type="button"><i class="fas fa-file-medical"></i> Crear</button>
+                    </a>
+                    <% } %>
                 </p></center>
             </div>
             <% } else if (sesion.esReclutador() && v.getCompra().getCuenta().getId() == sesion.getId()) { %>

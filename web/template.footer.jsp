@@ -8,7 +8,7 @@
                 </span>
                 <span id="right">
                     <a href="bulkjobs.jsp">Acerca de BulkJobs</a> &middot;
-                    <a href="contacto.jsp">Contáctanos</a> &middot;
+                    <a href="ayuda.jsp">Contáctanos</a> &middot;
                     <% if (sf != null && sf.isIniciada()) { %>
                     <a href="sesion.jsp?f=salir">Cerrar sesión</a> &middot;
                     <% } else { %>
@@ -20,7 +20,7 @@
                 </span>
             </footer>
         </div>
-    <script src="js/main.js"></script>
+    <script src="js/main.js?<%=System.currentTimeMillis()%>"></script>
     <script>
     tippy('[title]', {
 	arrow: true,

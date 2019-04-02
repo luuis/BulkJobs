@@ -45,9 +45,12 @@ public class PlanPComprado {
         this.fechaF = fechaF;
         this.vinculo = vinculo;
     }
-    
-    
 
+    public PlanPComprado(int id, String vinculo) {
+        this.id = id;
+        this.vinculo = vinculo;
+    }
+    
     public int getId() {
         return id;
     }
@@ -167,5 +170,55 @@ public class PlanPComprado {
         return planComprado;
     }
     
+    public static PlanPComprado obtenerPlanComprado(int id){
+        PlanPComprado planComprado = null;
+        try {
+            ConexionBD objCBD = new ConexionBD("bolsadetrabajo");
+            ArrayList instBD = new ArrayList();
+            instBD.add("SELECT * FROM plan_publ_comprado WHERE id_plan_publ_comprado = ?");
+            instBD.add(id);
+            objCBD.consultar(instBD);
+            ResultSet rs = objCBD.getCdr();
+            while (rs.next()) {
+                planComprado = new PlanPComprado(rs.getInt(1), PlanP.obtenerPlanP(rs.getInt(2)),
+                        Reclutador.obtenerCuenta(rs.getInt(3)), rs.getString(4), rs.getDate(5), rs.getDate(6));
+            } 
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+        return planComprado;
+    }
+    
+    public static boolean renovarPlanP(int id, Date fechaLimite){
+        ConexionBD objCBD = new ConexionBD("bolsadetrabajo");
+        ArrayList instBD = new ArrayList();
+        instBD.add("UPDATE plan_publ_comprado SET ppco_fecha_limite = ? WHERE id_plan_publ_comprado = ?");
+        
+        SimpleDateFormat sdf = new SimpleDateFormat("YYYY/MM/dd HH:mm:ss");
+        instBD.add(sdf.format(fechaLimite));
+        instBD.add(id);
+        
+        int agregar = objCBD.ejecutarABC(instBD);
+        
+        if(agregar > 0){
+            return true;
+        }
+        return false; 
+    }
+    
+     public  boolean editarPC(){
+        ConexionBD objCBD = new ConexionBD("bolsadetrabajo");
+        ArrayList instBD = new ArrayList();
+        instBD.add("UPDATE plan_publ_comprado SET ppco_vinculo = ? WHERE id_plan_publ_comprado = ?");
+        instBD.add(vinculo);
+        instBD.add(id);
+        
+        int editado = objCBD.ejecutarABC(instBD);
+        
+        if(editado > 0){
+            return  true;
+        }
+        return false;
+   }
     
 }

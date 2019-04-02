@@ -11,6 +11,10 @@ import java.util.ArrayList;
 public class Evaluacion {
     
     private int id;
+    private Empleador empleador;
+    private Reclutador reclutador;
+    private float evaluacion;
+    private String comen; 
 
     public Evaluacion(Empleador empleador, Reclutador reclutador, float evaluacion, String comen) {
         this.empleador = empleador;
@@ -18,10 +22,6 @@ public class Evaluacion {
         this.evaluacion = evaluacion;
         this.comen = comen;
     }
-    private Empleador empleador;
-    private Reclutador reclutador;
-    private float evaluacion;
-    private String comen; 
 
     public Evaluacion(int id, Empleador empleador, Reclutador reclutador, float evaluacion, String comen) {
         this.id = id;

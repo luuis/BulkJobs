@@ -1,3 +1,4 @@
+<%@page import="bean.Calificacion"%>
 <%@page import="java.io.File"%>
 <%@page import="bean.CursoComprado"%>
 <%@page import="java.util.ArrayList"%>
@@ -26,30 +27,53 @@ if ( c != null) { %>
             <p><%=c.getCurso().getDesc()%></p>
             <h4>Precio</h4>
             <p><%=c.getCurso().getPrecio() %></p>
-
-            
         </div>
             
-            
+        <div class="container" >
+            <% if (sesion.isIniciada()) { %>
+            <center><p>
+                Calificación: <%= Calificacion.obtenerPromC(Integer.parseInt(request.getParameter("c"))) %>
+            </p></center>
+            <input type="hidden" id="idCuenta" value="<%= sesion.getId()%>">
+            <input type="hidden" id="idCurso" value="<%= c.getId()%>">
+            <center id="calif">
+                <i title="Lametable" data-calif="1" class="far fa-thumbs-up fa-lg fa-fw"></i>
+                <i title="Malo" data-calif="2" class="far fa-thumbs-up fa-lg fa-fw"></i>
+                <i title="Regular" data-calif="3" class="far fa-thumbs-up fa-lg fa-fw"></i>
+                <i title="Me gusto" data-calif="4" class="far fa-thumbs-up fa-lg fa-fw"></i>
+                <i title="Excelente" data-calif="5" class="far fa-thumbs-up fa-lg fa-fw"></i>
+            </center>
+            <% } else { %>
+            <center><p>
+                Calificación: <%= Calificacion.obtenerPromC(Integer.parseInt(request.getParameter("c"))) %>
+            </p></center>
+            <% } %>
+        </div>
         
         <div class="container">
-            
-            <%
-                String contextPath = getServletContext().getRealPath(File.separator);
-                File fotoC = new File(contextPath + "../../web/subida/cursos/" + c.getCurso().getIdCurso()+ ".jpg");
+            <% ArrayList<Calificacion> calificaciones = Calificacion.obtenerEvaluacionesC2(request.getParameter("c"));
+            if(calificaciones.size() > 0){
+                for(Calificacion ca : calificaciones){%>
+                <article>
+                    <strong><%= ca.getCaliCa().getNombre() %></strong><br><%= ca.getComen() %>
+                </article>
+                <% }
+            } else {
+                out.println("Se el primero en evaluar");
+            } %>
+        </div>
+        <div class="container">
+            <% String contextPath = getServletContext().getRealPath(File.separator);
+            File fotoC = new File(contextPath + "../../web/subida/cursos/" + c.getCurso().getIdCurso()+ ".jpg");
             if (fotoC.exists()) { %>
             <div id="photo" style="background-image: url('subida/cursos/<%=c.getCurso().getIdCurso() %>.jpg');"></div>
             <% } else { %>
             <div id="photo"></div>
             <% } %></td>
-            
         </div>
-            
     </div>
     
     <div class="small">
-        
-        
         <div class="container">
             <h4>Capacitador</h4>
             <p><%=c.getCurso().getCuenta().getNombre() %></p>
@@ -63,16 +87,15 @@ if ( c != null) { %>
             <div class="container">
                 <h3>Inscribirse</h3>
                 <center><p>
-                        <input id="cue" type="hidden" value="<%= sesion.getId() %>">
-                        <input id="cur" type="hidden" value="<%= c.getId() %>">
+                    <input id="cue" type="hidden" value="<%= sesion.getId() %>">
+                    <input id="cur" type="hidden" value="<%= c.getId() %>">
                     <a id="insc">
                         <button id="inscribirte" type="button"><i class="fas fa-briefcase"></i> Inscribirse</button>
                     </a>
                 </p></center>
             </div>
-            
-            <% } %>
-        <% } else { %>
+            <% }
+        } else { %>
         <div class="container">
             <center>Debes iniciar sesión como un empleador para Inscribirte</center>
         </div>

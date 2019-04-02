@@ -220,7 +220,7 @@ CREATE TABLE IF NOT EXISTS `curso` (
   `curs_cuenta` int(11) NOT NULL,
   `curs_nombre` varchar(50) COLLATE latin1_spanish_ci NOT NULL,
   `curs_descripcion` varchar(500) COLLATE latin1_spanish_ci NOT NULL,
-  `curs_precio` float(5,2) unsigned NOT NULL,
+  `curs_precio` float(10,2) unsigned NOT NULL,
   PRIMARY KEY (`id_curso`),
   KEY `curs_cuenta` (`curs_cuenta`),
   CONSTRAINT `curs_cuenta` FOREIGN KEY (`curs_cuenta`) REFERENCES `cuenta` (`id_cuenta`) ON DELETE CASCADE ON UPDATE CASCADE
@@ -252,7 +252,7 @@ CREATE TABLE IF NOT EXISTS `curso_inscrito` (
   `id_curso_inscrito` int(11) NOT NULL AUTO_INCREMENT,
   `cuin_curso` int(11) NOT NULL,
   `cuin_cuenta` int(11) NOT NULL,
-  `ciun_fecha_insc` datetime NOT NULL,
+  `cuin_fecha_insc` datetime NOT NULL,
   PRIMARY KEY (`id_curso_inscrito`),
   KEY `cuin_curso` (`cuin_curso`),
   KEY `cuin_cuenta` (`cuin_cuenta`),
@@ -463,7 +463,7 @@ CREATE TABLE IF NOT EXISTS `plan` (
   `id_plan` int(11) NOT NULL AUTO_INCREMENT,
   `plan_nombre` varchar(50) NOT NULL,
   `plan_descripcion` varchar(200) NOT NULL,
-  `plan_precio` float(5,2) unsigned NOT NULL,
+  `plan_precio` float(10,2) unsigned NOT NULL,
   `plan_num_vacantes` int(3) unsigned NOT NULL,
   `plan_tiempo` int(8) NOT NULL,
   PRIMARY KEY (`id_plan`)
@@ -496,7 +496,7 @@ CREATE TABLE IF NOT EXISTS `plan_publ` (
   `id_plan_publ` int(11) NOT NULL AUTO_INCREMENT,
   `plpu_nombre` varchar(50) NOT NULL,
   `plpu_descripcion` varchar(200) NOT NULL,
-  `plpu_precio` float(5,2) unsigned NOT NULL,
+  `plpu_precio` float(10,2) unsigned NOT NULL,
   `plpu_tiempo` int(8) NOT NULL,
   PRIMARY KEY (`id_plan_publ`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
@@ -532,6 +532,7 @@ CREATE TABLE IF NOT EXISTS `plan_publ_comprado` (
   `id_plan_publ_comprado` int(11) NOT NULL AUTO_INCREMENT,
   `ppco_plan` int(11) NOT NULL,
   `ppco_cuenta` int(11) NOT NULL,
+  `ppco_vinculo` int(200) DEFAULT NULL,
   `ppco_fecha` datetime NOT NULL,
   `ppco_fecha_limite` datetime NOT NULL,
   PRIMARY KEY (`id_plan_publ_comprado`),

@@ -64,12 +64,15 @@ Sesion sh = (Sesion) session.getAttribute("sesion"); %>
                         <% if (sh.esCapacitador() || sh.esReclutador() || sh.esAdmin()) { %>
                         <li>
                             <a href="planesp.jsp" aria-haspopup="true">Publicidad</a>
-                            <% if (sh.esCapacitador()) { %>
+                            <% if (sh.esAdmin()) { %>
                             <ul class="dropdown" aria-label="submenu">
-                                <li><a href="planesp.jsp">Administrar planes</a></li>
-                                <li><a href="planp_nuevo.jsp">Agregar plan</a></li>
+                                <li><a href="planesp.jsp">Administrar Planes Publicitarios</a></li>
+                                <li><a href="planp_nuevo.jsp">Agregar Plan Publicitario</a></li>
                             </ul><% } %>
                         </li>
+                        <% }
+                        if (sh.esAdmin()) { %>
+                        <li><a href="feria_empleo.jsp">Feria de Empleo</a></li>
                         <% }
                         if (sh.esReclutador()) { %>
                         <li><a href="vacantes.jsp">Mis vacantes

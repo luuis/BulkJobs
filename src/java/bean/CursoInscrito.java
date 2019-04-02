@@ -113,6 +113,22 @@ public class CursoInscrito {
         
     }
     
-    
+    public static CursoInscrito ObtenerCurso(int id) {
+        CursoInscrito cursosIns = null;
+        try {
+            ConexionBD objCBD = new ConexionBD("bolsadetrabajo");
+            ArrayList instBD = new ArrayList();
+            instBD.add("SELECT * from curso_inscrito WHERE id_curso_inscrito = ? ");
+            instBD.add(id);
+            objCBD.consultar(instBD);
+            ResultSet rs = objCBD.getCdr();
+            while(rs.next()){
+                cursosIns= new CursoInscrito(rs.getInt("id_curso_inscrito"), Curso.obtenerCurso(rs.getInt("cuin_curso")), Empleador.obtenerCuenta(rs.getInt("cuin_cuenta")), rs.getDate("cuin_fecha_insc"));
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(CursoInscrito.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return cursosIns;
+    }
     
 }

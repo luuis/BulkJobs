@@ -139,4 +139,36 @@ $('#inscribirte').on('click', function() {
             //window.location.reload();
         }); //PUSE POST PARA AJAX JEJE 
     }
- });
+});
+ 
+$('#calif i').on('mouseover', function () {
+    $('#calif i').removeClass('fas');
+    $('#calif i').removeClass('far');
+    var calif = $(this).data('calif');
+    $('#calif i').each(function() {
+        if ($(this).data("calif") <= calif) {
+            $(this).addClass('fas');
+        } else {
+            $(this).addClass('far');
+        }
+    });
+    
+    $('#calif i').on('click', function() {
+        var calif = $(this).data('calif');
+        var comen = prompt("Ingresa un comentario");
+
+        /*POST tiene 3 atributos: la pagina que se va a mandar, los campos, y funcion que se hara despuess*/
+        $.post('/EvaluacionC',
+        /*Enviar los campos al Servlets*/
+        { 
+           c: calif, 
+           co: comen,
+           idCuenta: $("#idCuenta").val(), //recuperar el input y luego el valor
+           idCurso: $("#idCurso").val()
+
+        }, function(data, status) {
+            alertify.success(data); //alertify no es nativa, es una libreria
+            window.location.reload(); 
+        });
+    });
+});

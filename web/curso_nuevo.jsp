@@ -6,7 +6,7 @@
     <jsp:param name="titulo" value="Registrar Cursos" />
 </jsp:include>
 <section class="one">
-    <form action="/CursoNuevo" method="post" enctype="multipart/form-data" autocomplete="off" data-parsley-errors-messages-disabled> <!--Por default solo te accepta texto el formulario
+    <form action="/CursoNuevo" method="post" enctype="multipart/form-data" autocomplete="off" data-parsley-errors-messages-disabled class="validate"> <!--Por default solo te accepta texto el formulario
          y con el enctype lo cambio-->
         <div class="container">
             <center><img src="img/logo-black.png"></center><br/>
