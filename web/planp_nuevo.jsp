@@ -6,7 +6,7 @@
 </jsp:include>
 <section>
         
-    <form action="" method="post" autocomplete="off" data-parsley-errors-messages-disabled>
+    <form action="" method="post" autocomplete="off" data-parsley-errors-messages-disabled class="validate">
         <div class="container">
             <center><img src="img/logo-black.png"></center>
         <br/>

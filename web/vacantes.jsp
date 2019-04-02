@@ -9,9 +9,8 @@
     <jsp:param name="roles" value="reclutador" />
 </jsp:include>  
 <section class="one">
-    <form action="" method="post"  autocomplete="off" data-parsley-errors-messages-disabled>
+    <form action="" method="post"  autocomplete="off" data-parsley-errors-messages-disabled class="validate">
         <div class="container">
-            
             <center><h2>Catalogo Vacantes</h2></center>
             <style>
                 .pcv{
@@ -31,33 +30,21 @@
             </script>
             
             <% 
-                        Date fechaActual = new Date();
-                ArrayList<PlanComprado> planesComprados = PlanComprado.obtenerPlanCompradoRecl(sesion.getId());
-                if(planesComprados.size() > 0){
-                    for(PlanComprado pc : planesComprados){
-                        ArrayList<Vacante> av = Vacante.obtenerVacantesDelPlan(pc.getId());
-                        
-                        
-
-                    
-                
-                %>
-            
+            Date fechaActual = new Date();
+            ArrayList<PlanComprado> planesComprados = PlanComprado.obtenerPlanCompradoRecl(sesion.getId());
+            if(planesComprados.size() > 0){
+                for(PlanComprado pc : planesComprados){
+                    ArrayList<Vacante> av = Vacante.obtenerVacantesDelPlan(pc.getId()); %>
             <article>
                 <table width="100%">
                     <tr>
-                        <%
-                        if (fechaActual.before(pc.getFechaLimite())) {
-                        %>
+                        <% if (fechaActual.before(pc.getFechaLimite())) { %>
                         <td>
                             <h4>Plan <%= pc.getPlan().getNombre()%> &middot;
                                 Comprado el <%=pc.getFecha() %> &middot;
                                 Caduca el <%=pc.getFechaLimite() %> - Activo</h4>
                                 <p><%=av.size() %> de <%=pc.getPlan().getVacantes()%> Vacantes Agregadas<p>
                         </td>
-                        
-                        
-                        
                         <td style="text-align: right">
                             <a><button type="button" class="apc" data-pc="<%=pc.getId()%>"><i class="fas fa-plus"></i></button></a>
                             <% if (av.size() < pc.getPlan().getVacantes()) { %> 
@@ -70,12 +57,10 @@
                             <h4>Plan <%= pc.getPlan().getNombre()%> &middot; Caducado
                             <p><%=av.size() %> de <%=pc.getPlan().getVacantes()%> Vacantes Agregadas<p>
                         </td>
-                        
                         <td style="text-align: right">
                             <a><button type="button" class="apc" data-pc="<%=pc.getId()%>"><i class="fas fa-plus"></i></button></a>
                             <a href="comprar.jsp?rp=<%=pc.getId()%>"><button type="button"><i class="far fa-clock"></i> Renovar</button></a>
                         </td> 
-                        
                         <% } %>
                     </tr>
                 </table>
@@ -83,7 +68,7 @@
             
             <article class="pcv" id="pc-<%=pc.getId()%>">
                 <% for(Vacante v : av){ %>
-                <p><%=v.getTitulo()%></p>
+                <p><%=v.getTitulo()%> - <a href="vacante.jsp?v=<%=v.getId()%>">Ver más</a> - <a href="postulados.jsp?v=<%=v.getId()%>">Ver postulados</a></p>
                 <% } %>
             </article>
             
@@ -94,9 +79,6 @@
                     %>
             
         </div>   
-        
-        
-        
-        
+    </form>
 </section>
 <%@include file="template.footer.jsp" %> 

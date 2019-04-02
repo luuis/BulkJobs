@@ -5,8 +5,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList; 
 import java.util.Date;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class Vacante {
     private int id;
@@ -196,21 +194,12 @@ public class Vacante {
         ArrayList instBD = new ArrayList(); 
         instBD.add("INSERT INTO vacante VALUES(null, ?, ?, ?, ?, ?, ?, ?, 1, NOW())");
         instBD.add(categoria.getId());
-        System.out.println(categoria.getId());
         instBD.add(compra.getId());
-        System.out.println(compra.getId());
-        instBD.add(titulo);
-        System.out.println(titulo);  
+        instBD.add(titulo); 
         instBD.add(detalles); 
-        System.out.println(detalles);
         instBD.add(requisitos);
-        System.out.println(requisitos); 
         instBD.add(paga);
-        System.out.println(paga);
         instBD.add(tipoPaga);
-        System.out.println(tipoPaga);
-        //instBD.add(estado);
-        //System.out.println(estado);
         int registrado = objCBD.ejecutarABC(instBD);
         
         if(registrado > 0){

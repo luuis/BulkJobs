@@ -15,7 +15,7 @@
         <div class="container">
             <h3>Subir curriculum</h3>
             <p>Puedes subir un curriculum en formato PDF para poder postularte a vacantes.</p>
-            <form action="SubirCurriculum" method="post" enctype="multipart/form-data" id="uploadCV">
+            <form action="SubirCurriculum" method="post" enctype="multipart/form-data" id="uploadCV" class="validate">
             <center>
                 <p>
                     <input type="file" name="cv" required accept="application/pdf">

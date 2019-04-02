@@ -1,8 +1,12 @@
 package bean;
 
 import extra.ConexionBD;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class Postulacion {
     private int id;
@@ -112,4 +116,31 @@ public class Postulacion {
     }
     //</editor-fold>
     
+    
+    public static ArrayList<Postulacion> obtenerPostulado(int postulado){
+        ArrayList <Postulacion> postulacion = new ArrayList<>();
+        try {
+            ConexionBD objCBD = new ConexionBD("bolsadetrabajo");
+            ArrayList instBD = new ArrayList<>();
+            instBD.add("SELECT * FROM postulacion WHERE post_vacante = ? && post_estado = 0");
+            instBD.add(postulado);
+            objCBD.consultar(instBD);
+            ResultSet rs = objCBD.getCdr();
+            while(rs.next()){
+                Postulacion p = new Postulacion(rs.getInt("id_postulacion"),
+                    Vacante.obtenerVacante(rs.getInt("post_vacante")),
+                    Empleador.obtenerCuenta(rs.getInt("post_cuenta")),
+                    Curriculum.obtenerCurriculum2(rs.getInt("post_curriculum")),
+                    rs.getString("post_comentario"),
+                    rs.getDate("post_fecha_hora"),
+                    rs.getInt("post_estado"));
+                postulacion.add(p);
+            } 
+            
+        } catch (SQLException ex) {
+            Logger.getLogger(Postulacion.class.getName()).log(Level.SEVERE, null, ex);
+        }
+      
+        return postulacion;
+    }
 }

@@ -17,7 +17,7 @@ public class CV extends HttpServlet {
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        Curriculum c = Curriculum.obtenerCurriculum(Integer.parseInt(request.getParameter("c")));
+        Curriculum c = Curriculum.obtenerCurriculum2(Integer.parseInt(request.getParameter("c")));
         if (c != null) {
             if (c.getArchivo().isEmpty()) {
                 // Curriculum generado

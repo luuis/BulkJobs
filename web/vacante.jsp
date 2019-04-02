@@ -98,9 +98,9 @@ if (v != null) { %>
             <% } else if (sesion.esReclutador() && v.getCompra().getCuenta().getId() == sesion.getId()) { %>
             <div class="container">
                 <center>
-                    <button type="button">Editar</button>
+                    <a href="editar_vacante.jsp"><button type="button">Editar</button></a>
                     <button type="button">Eliminar</button>
-                    <button type="button">Ver postulantes</button>
+                    <a href="postulados.jsp?v=<%=v.getId()%>"><button type="button">Ver postulantes</button></a>
                 </center>
             </div>
             <% } %>
