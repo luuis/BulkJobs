@@ -7,6 +7,7 @@ import java.util.ArrayList;
 
 public class Sesion<E> {
     private boolean iniciada;
+    private boolean activa;
     private int id;
     private int tipo;
     private E cuenta;
@@ -24,6 +25,14 @@ public class Sesion<E> {
 
     public void setIniciada(boolean iniciada) {
         this.iniciada = iniciada;
+    }
+    
+    public boolean isActiva() {
+        return activa;
+    }
+
+    public void setActiva(boolean activa) {
+        this.activa = activa;
     }
 
     public int getId() {
@@ -63,6 +72,7 @@ public class Sesion<E> {
                 objCBD.consultar(instBD);
                 ResultSet rs = objCBD.getCdr();
                 while (rs.next()) {
+                    activa = rs.getBoolean("cuen_activa");
                     boolean comprobar = extra.PasswordUtils.verifyUserPassword(
                             contrasena, rs.getString("cuen_contrasena"), rs.getString("cuen_salt"));
                     

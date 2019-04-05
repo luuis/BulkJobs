@@ -3,7 +3,7 @@ package bean;
 import extra.ConexionBD;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList; 
+import java.util.ArrayList;
 import java.util.Date;
 
 public class Vacante {

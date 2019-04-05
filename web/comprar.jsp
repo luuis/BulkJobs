@@ -1,3 +1,5 @@
+<%@page import="bean.Cuenta"%>
+<%@page import="bean.Empleador"%>
 <%@page import="java.text.DateFormat"%>
 <%@page import="java.text.SimpleDateFormat"%>
 <%@page import="bean.PlanPComprado"%>
@@ -16,12 +18,15 @@
 <jsp:include page="template.header.jsp">
     <jsp:param name="titulo" value="Compra" />
     <jsp:param name="roles" value="reclutador" />
+    <jsp:param name="roles" value="empleador" />
+    
 </jsp:include>
 <form action="" method="post" autocomplete="off" data-parsley-errors-messages-disabled class="validate">
 <section class="two small">
     <% if (request.getParameter("comprar") != null) {
         if (request.getParameter("tipo").equals("curso")) {
-            CursoComprado cc = new CursoComprado(Curso.obtenerCurso(Integer.parseInt(request.getParameter("id"))), Reclutador.obtenerCuenta(sesion.getId()));      
+            CursoComprado cc = new CursoComprado(Curso.obtenerCurso(Integer.parseInt(request.getParameter("id"))), Cuenta.obtenerCuenta(sesion.getId()));      
+            
             
             Tarjeta t = Tarjeta.obtenerTarjeta(Long.parseLong(request.getParameter("numero")));
             

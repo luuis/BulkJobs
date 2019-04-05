@@ -1,6 +1,17 @@
 package bean;
 
+import com.itextpdf.text.Document;
+import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.Element;
+import com.itextpdf.text.Font;
+import com.itextpdf.text.FontFactory;
+import com.itextpdf.text.Paragraph;
+import com.itextpdf.text.Phrase;
+import com.itextpdf.text.pdf.PdfPCell;
+import com.itextpdf.text.pdf.PdfPTable;
+import com.itextpdf.text.pdf.PdfWriter;
 import extra.ConexionBD;
+import java.io.ByteArrayOutputStream;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -247,5 +258,404 @@ public class Curriculum {
         objCBD.cerrarConexion();
     }
     
+    public static ByteArrayOutputStream generarPdf(Curriculum c) {
+        Document document = new Document();
+        ByteArrayOutputStream bout = new ByteArrayOutputStream();
+        ConexionBD objCBD = new ConexionBD("bolsadetrabajo");
+        ArrayList aibd = null;
+        ResultSet rs = null;
+        PdfPCell hcell;
+        
+        try {
+            Font headFont = FontFactory.getFont(FontFactory.HELVETICA_BOLD);
+            
+            PdfPTable tableIP = new PdfPTable(4);
+            PdfPTable tableEL = new PdfPTable(4);
+            PdfPTable tableFA = new PdfPTable(4);
+            PdfPTable tableID = new PdfPTable(4);
+            PdfPTable tableDF = new PdfPTable(4);
+            PdfPTable tableRP = new PdfPTable(4);
+            
+            //<editor-fold defaultstate="collapsed" desc="Informacion personal">
+            tableIP.setWidthPercentage(80);
+            tableIP.setWidths(new int[]{1, 1, 1, 1});
+
+            hcell = new PdfPCell(new Phrase("Nombre", headFont));
+            hcell.setHorizontalAlignment(Element.ALIGN_CENTER);
+            tableIP.addCell(hcell);
+
+            hcell = new PdfPCell(new Phrase(c.getCuenta().getNombre() + " " + c.getCuenta().getApPaterno() + " " + c.getCuenta().getApMaterno()));
+            hcell.setColspan(3);
+            tableIP.addCell(hcell);
+
+            hcell = new PdfPCell(new Phrase("Sexo", headFont));
+            hcell.setHorizontalAlignment(Element.ALIGN_CENTER);
+            tableIP.addCell(hcell);
+
+            hcell = new PdfPCell(new Phrase(c.getCuenta().getSexoS()));
+            tableIP.addCell(hcell);
+
+            hcell = new PdfPCell(new Phrase("Estado civil", headFont));
+            hcell.setHorizontalAlignment(Element.ALIGN_CENTER);
+            tableIP.addCell(hcell);
+
+            hcell = new PdfPCell(new Phrase(c.getCuenta().getEstadoCivil()));
+            tableIP.addCell(hcell);
+
+            hcell = new PdfPCell(new Phrase("Profesión", headFont));
+            hcell.setHorizontalAlignment(Element.ALIGN_CENTER);
+            tableIP.addCell(hcell);
+
+            hcell = new PdfPCell(new Phrase(c.getCuenta().getProfesion()));
+            tableIP.addCell(hcell);
+
+            hcell = new PdfPCell(new Phrase("Teléfono", headFont));
+            hcell.setHorizontalAlignment(Element.ALIGN_CENTER);
+            tableIP.addCell(hcell);
+
+            hcell = new PdfPCell(new Phrase(c.getCuenta().getTelefono()));
+            tableIP.addCell(hcell);
+            
+            hcell = new PdfPCell(new Phrase("Correo electrónico", headFont));
+            hcell.setHorizontalAlignment(Element.ALIGN_CENTER);
+            tableIP.addCell(hcell);
+
+            hcell = new PdfPCell(new Phrase(c.getCuenta().getCorreo()));
+            hcell.setColspan(3);
+            tableIP.addCell(hcell);
+
+            hcell = new PdfPCell(new Phrase("CURP", headFont));
+            hcell.setHorizontalAlignment(Element.ALIGN_CENTER);
+            tableIP.addCell(hcell);
+
+            hcell = new PdfPCell(new Phrase(c.getCuenta().getCurp()));
+            tableIP.addCell(hcell);
+
+            hcell = new PdfPCell(new Phrase("Fecha de nacimiento", headFont));
+            hcell.setHorizontalAlignment(Element.ALIGN_CENTER);
+            tableIP.addCell(hcell);
+
+            hcell = new PdfPCell(new Phrase(c.getCuenta().getFechaNacimiento().toString()));
+            tableIP.addCell(hcell);
+
+            hcell = new PdfPCell(new Phrase("Dirección", headFont));
+            hcell.setHorizontalAlignment(Element.ALIGN_CENTER);
+            tableIP.addCell(hcell);
+
+            hcell = new PdfPCell(new Phrase(c.getCuenta().getDireccionNumExterior() + ", " + c.getCuenta().getDireccionNumInterior() + ", " + c.getCuenta().getDireccionLocalidad() + ", " + c.getCuenta().getDireccionMunicipio() + ", " + c.getCuenta().getDireccionEstado()));
+            hcell.setColspan(3);
+            tableIP.addCell(hcell);
+            //</editor-fold>
+            
+            //<editor-fold defaultstate="collapsed" desc="Experiencia laboral">
+            aibd = new ArrayList();
+            aibd.add("SELECT * FROM cv_experiencia_laboral WHERE cvel_curriculum = ?");
+            aibd.add(c.getId());
+            objCBD.consultar(aibd);
+            rs = objCBD.getCdr();
+            
+            while (rs.next()) {
+                tableEL.setWidthPercentage(80);
+                tableEL.setWidths(new int[]{1, 1, 1, 1});
+
+                hcell = new PdfPCell(new Phrase("Nombre de la empresa", headFont));
+                hcell.setHorizontalAlignment(Element.ALIGN_CENTER);
+                tableEL.addCell(hcell);
+
+                hcell = new PdfPCell(new Phrase(rs.getString("cvel_nombre_empresa")));
+                tableEL.addCell(hcell);
+                
+                hcell = new PdfPCell(new Phrase("Puesto", headFont));
+                hcell.setHorizontalAlignment(Element.ALIGN_CENTER);
+                tableEL.addCell(hcell);
+                
+                hcell = new PdfPCell(new Phrase(rs.getString("cvel_puesto")));
+                tableEL.addCell(hcell);
+
+                hcell = new PdfPCell(new Phrase("Año de inicio", headFont));
+                hcell.setHorizontalAlignment(Element.ALIGN_CENTER);
+                tableEL.addCell(hcell);
+
+                hcell = new PdfPCell(new Phrase(rs.getString("cvel_anio_inicio")));
+                tableEL.addCell(hcell);
+                
+                hcell = new PdfPCell(new Phrase("Año de fin", headFont));
+                hcell.setHorizontalAlignment(Element.ALIGN_CENTER);
+                tableEL.addCell(hcell);
+                
+                hcell = new PdfPCell(new Phrase(rs.getString("cvel_anio_fin")));
+                tableEL.addCell(hcell);
+                
+                hcell = new PdfPCell(new Phrase("Nombre del jefe", headFont));
+                hcell.setHorizontalAlignment(Element.ALIGN_CENTER);
+                tableEL.addCell(hcell);
+                
+                hcell = new PdfPCell(new Phrase(rs.getString("cvel_nombre_jefe") + " " + rs.getString("cvel_app_jefe") + " " + rs.getString("cvel_apm_jefe")));
+                hcell.setColspan(3);
+                tableEL.addCell(hcell);
+                
+                hcell = new PdfPCell(new Phrase("Teléfono", headFont));
+                hcell.setHorizontalAlignment(Element.ALIGN_CENTER);
+                tableEL.addCell(hcell);
+
+                hcell = new PdfPCell(new Phrase(rs.getString("cvel_telefono")));
+                tableEL.addCell(hcell);
+                
+                hcell = new PdfPCell(new Phrase("Funciones realizadas", headFont));
+                hcell.setHorizontalAlignment(Element.ALIGN_CENTER);
+                tableEL.addCell(hcell);
+                
+                hcell = new PdfPCell(new Phrase(rs.getString("cvel_funciones")));
+                tableEL.addCell(hcell);
+                
+                hcell = new PdfPCell(new Phrase("Dirección", headFont));
+                hcell.setHorizontalAlignment(Element.ALIGN_CENTER);
+                tableEL.addCell(hcell);
+                
+                hcell = new PdfPCell(new Phrase(rs.getString("cvel_dir_num_ext") + ", " + rs.getString("cvel_dir_num_int") + ", " + rs.getString("cvel_dir_localidad") + ", " + rs.getString("cvel_dir_municipio") + ", " + rs.getString("cvel_dir_estado")));
+                hcell.setColspan(3);
+                tableEL.addCell(hcell);
+            }
+            //</editor-fold>
+            
+            //<editor-fold defaultstate="collapsed" desc="Formación académica">
+            aibd = new ArrayList();
+            aibd.add("SELECT * FROM cv_formacion_academica WHERE cvfa_curriculum = ?");
+            aibd.add(c.getId());
+            objCBD.consultar(aibd);
+            rs = objCBD.getCdr();
+            
+            while (rs.next()) {
+                tableFA.setWidthPercentage(80);
+                tableFA.setWidths(new int[]{1, 1, 1, 1});
+
+                hcell = new PdfPCell(new Phrase("Nombre de la institución", headFont));
+                hcell.setHorizontalAlignment(Element.ALIGN_CENTER);
+                tableFA.addCell(hcell);
+
+                hcell = new PdfPCell(new Phrase(rs.getString("cvfa_nombre_institucion")));
+                tableFA.addCell(hcell);
+                
+                hcell = new PdfPCell(new Phrase("Nivel", headFont));
+                hcell.setHorizontalAlignment(Element.ALIGN_CENTER);
+                tableFA.addCell(hcell);
+                
+                hcell = new PdfPCell(new Phrase(rs.getString("cvfa_nivel")));
+                tableFA.addCell(hcell);
+
+                hcell = new PdfPCell(new Phrase("Año de inicio", headFont));
+                hcell.setHorizontalAlignment(Element.ALIGN_CENTER);
+                tableFA.addCell(hcell);
+
+                hcell = new PdfPCell(new Phrase(rs.getString("cvfa_anio_inicio")));
+                tableFA.addCell(hcell);
+                
+                hcell = new PdfPCell(new Phrase("Año de fin", headFont));
+                hcell.setHorizontalAlignment(Element.ALIGN_CENTER);
+                tableFA.addCell(hcell);
+                
+                hcell = new PdfPCell(new Phrase(rs.getString("cvfa_anio_fin")));
+                tableFA.addCell(hcell);
+                
+                hcell = new PdfPCell(new Phrase("Título/certificado", headFont));
+                hcell.setHorizontalAlignment(Element.ALIGN_CENTER);
+                tableFA.addCell(hcell);
+
+                hcell = new PdfPCell(new Phrase(rs.getString("cvfa_titulo_certificado")));
+                tableFA.addCell(hcell);
+                
+                hcell = new PdfPCell(new Phrase("Cédula", headFont));
+                hcell.setHorizontalAlignment(Element.ALIGN_CENTER);
+                tableFA.addCell(hcell);
+                
+                hcell = new PdfPCell(new Phrase(rs.getString("cvfa_cedula")));
+                tableFA.addCell(hcell);
+                
+                hcell = new PdfPCell(new Phrase("Dirección", headFont));
+                hcell.setHorizontalAlignment(Element.ALIGN_CENTER);
+                tableFA.addCell(hcell);
+                
+                hcell = new PdfPCell(new Phrase(rs.getString("cvfa_dir_num_ext") + ", " + rs.getString("cvfa_dir_num_int") + ", " + rs.getString("cvfa_dir_localidad") + ", " + rs.getString("cvfa_dir_municipio") + ", " + rs.getString("cvfa_dir_estado")));
+                hcell.setColspan(3);
+                tableFA.addCell(hcell);
+                
+                hcell = new PdfPCell(new Phrase("Estatus", headFont));
+                hcell.setHorizontalAlignment(Element.ALIGN_CENTER);
+                tableFA.addCell(hcell);
+                
+                hcell = new PdfPCell(new Phrase(rs.getString("cvfa_estado")));
+                hcell.setColspan(3);
+                tableFA.addCell(hcell);
+            }
+            //</editor-fold>
+            
+            //<editor-fold defaultstate="collapsed" desc="Idiomas">
+            aibd = new ArrayList();
+            aibd.add("SELECT * FROM cv_idiomas WHERE idio_curriculum = ?");
+            aibd.add(c.getId());
+            objCBD.consultar(aibd);
+            rs = objCBD.getCdr();
+            
+            while (rs.next()) {
+                tableID.setWidthPercentage(80);
+                tableID.setWidths(new int[]{1, 1, 1, 1});
+
+                hcell = new PdfPCell(new Phrase("Idioma", headFont));
+                hcell.setHorizontalAlignment(Element.ALIGN_CENTER);
+                tableID.addCell(hcell);
+
+                hcell = new PdfPCell(new Phrase(rs.getString("idio_idioma")));
+                tableID.addCell(hcell);
+                
+                hcell = new PdfPCell(new Phrase("Porcentaje", headFont));
+                hcell.setHorizontalAlignment(Element.ALIGN_CENTER);
+                tableID.addCell(hcell);
+                
+                hcell = new PdfPCell(new Phrase(rs.getString("idio_porcentaje")));
+                tableID.addCell(hcell);
+            }
+            //</editor-fold>
+            
+            //<editor-fold defaultstate="collapsed" desc="Datos familiares">
+            aibd = new ArrayList();
+            aibd.add("SELECT * FROM cv_datos_familiares WHERE cvdf_curriculum = ?");
+            aibd.add(c.getId());
+            objCBD.consultar(aibd);
+            rs = objCBD.getCdr();
+            
+            while (rs.next()) {
+                tableDF.setWidthPercentage(80);
+                tableDF.setWidths(new int[]{1, 1, 1, 1});
+                
+                hcell = new PdfPCell(new Phrase("Nombre del familiar", headFont));
+                hcell.setHorizontalAlignment(Element.ALIGN_CENTER);
+                tableDF.addCell(hcell);
+                
+                hcell = new PdfPCell(new Phrase(rs.getString("cvdf_nombre") + " " + rs.getString("cvel_app") + " " + rs.getString("cvel_apm")));
+                hcell.setColspan(3);
+                tableDF.addCell(hcell);
+
+                hcell = new PdfPCell(new Phrase("Parentesco", headFont));
+                hcell.setHorizontalAlignment(Element.ALIGN_CENTER);
+                tableDF.addCell(hcell);
+
+                hcell = new PdfPCell(new Phrase(rs.getString("cvdf_parentesco")));
+                tableDF.addCell(hcell);
+                
+                hcell = new PdfPCell(new Phrase("Ocupación", headFont));
+                hcell.setHorizontalAlignment(Element.ALIGN_CENTER);
+                tableDF.addCell(hcell);
+                
+                hcell = new PdfPCell(new Phrase(rs.getString("cvdf_ocupacion")));
+                tableDF.addCell(hcell);
+
+                hcell = new PdfPCell(new Phrase("Vive", headFont));
+                hcell.setHorizontalAlignment(Element.ALIGN_CENTER);
+                tableDF.addCell(hcell);
+
+                hcell = new PdfPCell(new Phrase(rs.getString("cvdf_vive")));
+                tableDF.addCell(hcell);
+                
+                hcell = new PdfPCell(new Phrase("Finado", headFont));
+                hcell.setHorizontalAlignment(Element.ALIGN_CENTER);
+                tableDF.addCell(hcell);
+                
+                hcell = new PdfPCell(new Phrase(rs.getString("cvdf_finado")));
+                tableDF.addCell(hcell);
+                
+                hcell = new PdfPCell(new Phrase("Teléfono", headFont));
+                hcell.setHorizontalAlignment(Element.ALIGN_CENTER);
+                tableDF.addCell(hcell);
+                
+                hcell = new PdfPCell(new Phrase("Dirección", headFont));
+                hcell.setHorizontalAlignment(Element.ALIGN_CENTER);
+                tableDF.addCell(hcell);
+                
+                hcell = new PdfPCell(new Phrase(rs.getString("cvdf_dir_num_ext") + ", " + rs.getString("cvdf_dir_num_int") + ", " + rs.getString("cvdf_dir_localidad") + ", " + rs.getString("cvdf_dir_municipio") + ", " + rs.getString("cvdf_dir_estado")));
+                hcell.setColspan(3);
+                tableDF.addCell(hcell);
+            }
+            //</editor-fold>
+            
+            //<editor-fold defaultstate="collapsed" desc="Datos familiares">
+            aibd = new ArrayList();
+            aibd.add("SELECT * FROM cv_datos_familiares WHERE cvdf_curriculum = ?");
+            aibd.add(c.getId());
+            objCBD.consultar(aibd);
+            rs = objCBD.getCdr();
+            
+            while (rs.next()) {
+                tableRP.setWidthPercentage(80);
+                tableRP.setWidths(new int[]{1, 1, 1, 1});
+                
+                hcell = new PdfPCell(new Phrase("Nombre de la referencia", headFont));
+                hcell.setHorizontalAlignment(Element.ALIGN_CENTER);
+                tableRP.addCell(hcell);
+                
+                hcell = new PdfPCell(new Phrase(rs.getString("cvrp_nombre") + " " + rs.getString("cvrp_app") + " " + rs.getString("cvrp_apm")));
+                hcell.setColspan(3);
+                tableRP.addCell(hcell);
+
+                hcell = new PdfPCell(new Phrase("Teléfono", headFont));
+                hcell.setHorizontalAlignment(Element.ALIGN_CENTER);
+                tableRP.addCell(hcell);
+
+                hcell = new PdfPCell(new Phrase(rs.getString("cvrp_telefono")));
+                tableRP.addCell(hcell);
+                
+                hcell = new PdfPCell(new Phrase("Relación", headFont));
+                hcell.setHorizontalAlignment(Element.ALIGN_CENTER);
+                tableRP.addCell(hcell);
+                
+                hcell = new PdfPCell(new Phrase(rs.getString("cvrp_relacion")));
+                tableRP.addCell(hcell);
+
+                hcell = new PdfPCell(new Phrase("Tiempo de conocerlo", headFont));
+                hcell.setHorizontalAlignment(Element.ALIGN_CENTER);
+                tableRP.addCell(hcell);
+
+                hcell = new PdfPCell(new Phrase(rs.getString("cvrp_tiempo_conociendo")));
+                tableRP.addCell(hcell);
+                
+                hcell = new PdfPCell(new Phrase("Tipo de referencia", headFont));
+                hcell.setHorizontalAlignment(Element.ALIGN_CENTER);
+                tableRP.addCell(hcell);
+                
+                hcell = new PdfPCell(new Phrase(rs.getString("cvrp_tipo")));
+                tableRP.addCell(hcell);
+                
+                hcell = new PdfPCell(new Phrase("Dirección", headFont));
+                hcell.setHorizontalAlignment(Element.ALIGN_CENTER);
+                tableRP.addCell(hcell);
+                
+                hcell = new PdfPCell(new Phrase(rs.getString("cvrp_dir_num_ext") + ", " + rs.getString("cvrp_dir_num_int") + ", " + rs.getString("cvrp_dir_localidad") + ", " + rs.getString("cvrp_dir_municipio") + ", " + rs.getString("cvrp_dir_estado")));
+                hcell.setColspan(3);
+                tableRP.addCell(hcell);
+            }
+            //</editor-fold>
+            
+            PdfWriter.getInstance(document, bout);
+            document.open();
+            
+            document.add(new Paragraph("Currículum Vitae", headFont));
+            document.add(tableIP);
+            document.add(new Paragraph("Experiencia laboral", headFont));
+            document.add(tableEL);
+            document.add(new Paragraph("Formación académica", headFont));
+            document.add(tableFA);
+            document.add(new Paragraph("Idiomas", headFont));
+            document.add(tableID);
+            document.add(new Paragraph("Datos familiares", headFont));
+            document.add(tableDF);
+            document.add(new Paragraph("Referencias personales", headFont));
+            document.add(tableRP);
+            
+            document.close();
+        } catch (DocumentException | SQLException ex) {
+            ex.printStackTrace();
+        }
+        
+        return bout;
+    }
     //</editor-fold>
 }

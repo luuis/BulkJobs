@@ -1,11 +1,11 @@
 package servlet;
 
 import bean.Curriculum;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.io.PrintWriter;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -17,16 +17,19 @@ public class CV extends HttpServlet {
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        response.setContentType("application/pdf;charset=UTF-8");
         Curriculum c = Curriculum.obtenerCurriculum2(Integer.parseInt(request.getParameter("c")));
+        
         if (c != null) {
-            if (c.getArchivo().isEmpty()) {
-                // Curriculum generado
+            if (c.getArchivo() == null || c.getArchivo().trim().isEmpty()) {
+                response.addHeader("Content-Disposition", "inline; filename=curriculum.pdf");
+                ByteArrayOutputStream baos = Curriculum.generarPdf(c);
+                baos.writeTo(response.getOutputStream());
             } else {
                 String fileName = c.getArchivo();
                 String contextPath = getServletContext().getRealPath(File.separator);
                 File pdf = new File(contextPath + "../../web/subida/curriculum/" + fileName);
 
-                response.setContentType("application/pdf");
                 response.addHeader("Content-Disposition", "inline; filename=" + fileName.substring(17));
                 response.setContentLength((int) pdf.length());
 

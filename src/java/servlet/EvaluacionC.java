@@ -63,7 +63,7 @@ public class EvaluacionC extends HttpServlet {
             } else {
                 
                 ArrayList ca = new ArrayList();
-                ca.add("INSERT INTO CALIFICACION VALUES(null,?, ?,?, NOW(), ?)");
+                ca.add("INSERT INTO CALIFICACION VALUES(null,?, ?, ?, NOW(), ?)");
                 ca.add(idCurso);
                 ca.add(idCuenta);
                 ca.add(calif);

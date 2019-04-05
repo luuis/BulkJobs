@@ -72,22 +72,24 @@ public class Categoria {
     }
     public static ArrayList<Categoria> obtenerSubcategorias(int id) {
         ArrayList<Categoria> subcategorias = new ArrayList();
+        ConexionBD objCBD = new ConexionBD("bolsadetrabajo");
+        ArrayList instBD = null;
+        ResultSet rs = null;
         try {
-            ConexionBD objCBD = new ConexionBD("bolsadetrabajo");
-            ArrayList instBD = new ArrayList();
+            instBD = new ArrayList();
             instBD.add("SELECT * FROM categoria WHERE cate_subcategoria = ?");
             instBD.add(id);
             objCBD.consultar(instBD);
-            ResultSet rs = objCBD.getCdr();
+            rs = objCBD.getCdr();
             while (rs.next()) {
                 Categoria c = new Categoria(rs.getInt(1), rs.getString(2));
                 subcategorias.add(c);
             }
             rs.close();
-            objCBD.cerrarConexion();
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
+        objCBD.cerrarConexion();
         return subcategorias;
     }
     

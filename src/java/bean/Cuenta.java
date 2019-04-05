@@ -1,6 +1,7 @@
 package bean;
 
 import extra.ConexionBD;
+import extra.Email;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -92,7 +93,7 @@ public class Cuenta {
     //</editor-fold>
     
     //<editor-fold defaultstate="collapsed" desc="Métodos">
-    public int registro() {
+    public int registro(String url) {
         ConexionBD objCBD = new ConexionBD("bolsadetrabajo");
         ArrayList instBD = new ArrayList();
         instBD.add("INSERT INTO cuenta VALUES(null, ?, ?, ?, ?, 0)");
@@ -103,6 +104,14 @@ public class Cuenta {
         int ibd = objCBD.ejecutarABC(instBD);
         if (ibd > 0) {
             id = objCBD.ultimoId();
+            
+            Email em = new Email();
+            em.setRemitente("no-reply@bulkjobs.com");
+            em.setDestinatario(correo);
+            em.setAsunto("Confirma tu cuenta de BulkJobs");
+            em.setCuerpo("<h3>BulkJobs</h3><p>Debes confirmar tu cuenta para poder continuar navegando ingresando a: <a href='http://" + url + "/sesion.jsp?token=" + salt + "'>http://" + url + "/sesion.jsp?token=" + salt + "</a></p>");
+            em.enviarCorreo();
+            
             return id; 
         }
         return 0;

@@ -57,20 +57,16 @@ if (v != null) { %>
                 <script>
                 $(function() {
                     $("#postu").on('click', function() {
-                        alertify.prompt("Escribe un comentario para el reclutador.", "",
-                        function(evt, value ) {
-                            var vaca = "<%=v.getId()%>";
+                        var x = prompt("Escribe un comentario para el reclutador.");
+                            var vaca = "<%=v.getId()%>"; 
                             var user = "<%=sesion.getId()%>";
                             var curr = "<%=curriculum.getId()%>";
-                            $.post('Postulacion', { v: vaca, u: user, c: curr, m: value }, 
+                            $.post('Postulacion', { v: vaca, u: user, c: curr, m: x }, 
                               function(returnedData) {
                                 console.log(returnedData);
                                 alertify.success("Te haz postulado correctamente");
                               }
                             );
-                        },
-                        function(){ })
-                        ;
                     });
                 });
                 </script>

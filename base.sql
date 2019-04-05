@@ -74,7 +74,7 @@ CREATE TABLE IF NOT EXISTS `calificacion` (
   `id_calificacion` int(11) NOT NULL AUTO_INCREMENT,
   `cali_curso` int(11) NOT NULL,
   `cali_cuenta` int(11) NOT NULL,
-  `cali_calificacion` float(2,2) unsigned NOT NULL,
+  `cali_calificacion` float(4,2) unsigned NOT NULL,
   `cali_fecha_hora` datetime NOT NULL,
   `cali_comentario` text COLLATE latin1_spanish_ci,
   PRIMARY KEY (`id_calificacion`),
@@ -405,7 +405,7 @@ CREATE TABLE IF NOT EXISTS `empleador` (
 
 -- Volcando datos para la tabla bolsadetrabajo.empleador: ~0 rows (aproximadamente)
 /*!40000 ALTER TABLE `empleador` DISABLE KEYS */;
-INSERT INTO `empleador` (`empl_cuenta`, `empl_estado_civil`, `empl_profesion`, `empl_nombre`, `empl_ap_pat`, `empl_ap_mat`, `empl_sexo`, `empl_telefono`, `empl_fecha_nacimiento`, `empl_curp`, `empl_dir_num_int`, `empl_dir_num_ext`, `empl_dir_localidad`, `empl_dir_municipio`, `empl_dir_estado`, `empl_latitud`, `empl_longitud`) VALUES (2, 'Solter@', 'Desarrolladora', 'Andrea Vanessa', 'Perez', 'Sibaja', 'M', 5516124206, '1999-01-01', 'SURL990529HMCRSS04', 'Lago 1', 'Calle 4', 'Paseos del Lago 2', 'Zumpango de Ocampo', 'Mexico', 0.000000, 0.000000);
+INSERT INTO `empleador` (`empl_cuenta`, `empl_estado_civil`, `empl_profesion`, `empl_nombre`, `empl_ap_pat`, `empl_ap_mat`, `empl_sexo`, `empl_telefono`, `empl_fecha_nacimiento`, `empl_curp`, `empl_dir_num_int`, `empl_dir_num_ext`, `empl_dir_localidad`, `empl_dir_municipio`, `empl_dir_estado`, `empl_latitud`, `empl_longitud`) VALUES (2, 'Solter@', 'Desarrolladora', 'Andrea Vanessa', 'Perez', 'Sibaja', 'F', 5516124206, '1999-01-01', 'SURL990529HMCRSS04', 'Lago 1', 'Calle 4', 'Paseos del Lago 2', 'Zumpango de Ocampo', 'Mexico', 0.000000, 0.000000);
 /*!40000 ALTER TABLE `empleador` ENABLE KEYS */;
 
 -- Volcando estructura para tabla bolsadetrabajo.evaluacion

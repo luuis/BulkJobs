@@ -77,7 +77,7 @@ $(window).on('load', function() {
     $(window).on('keyup', { keys: 'alt+shift+c' }, function () { window.location = "cursos.jsp"; });
     $(window).on('keyup', { keys: 'alt+shift+m' }, function () { window.location = "mensajes.jsp"; });
     $(window).on('keyup', { keys: 'alt+shift+p' }, function () { window.location = "planes.jsp"; });
-    $(window).on('keyup', { keys: 'alt+shift+h' }, function () { window.location = "contacto.jsp"; });
+    $(window).on('keyup', { keys: 'alt+shift+h' }, function () { window.location = "ayuda.jsp"; });
 });
 
 $('input[name=tipo]').on('change', function() {

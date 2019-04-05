@@ -125,6 +125,14 @@ public class Empleador extends Cuenta {
     public String getSexo() {
         return sexo;
     }
+    
+    public String getSexoS() {
+        switch (sexo) {
+            case "M": return "Masculino";
+            case "F": return "Femenino";
+            default: return sexo; 
+        }
+    }
 
     public void setSexo(String sexo) {
         this.sexo = sexo;
@@ -278,4 +286,5 @@ public class Empleador extends Cuenta {
         return empleador;
     }
     //</editor-fold>
+    
 }

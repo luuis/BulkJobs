@@ -53,7 +53,7 @@
                 <td><%=cursos.get(i).getNombre()%></td>
                 <td><%=cursos.get(i).getDesc()%></td>
                 <td><%=cursos.get(i).getPrecio()%></td>
-                <% if (sesion.esReclutador()) { %>
+                <% if (sesion.esReclutador() && sesion.esEmpleador()) { %>
                 <td><center><a href="comprar.jsp?c=<%=cursos.get(i).getIdCurso()%>"><button><i class="fas fa-shopping-cart"></i> Comprar</button></a></center></td>
                 <% } else { %>
                 <td><center><a href="curso_editar.jsp?i=<%=cursos.get(i).getIdCurso()%>"><button><i class="fas fa-edit"></i> Editar</button></a></center></td>

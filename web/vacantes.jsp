@@ -74,10 +74,19 @@
             
                 <%}
                     }else{
-
-                }
+                    /*Date fechaa = new Date();
+                    ArrayList <Vacante> vacante = Vacante.obtenerVacante(sesion.getId());
+                    if( vacante.get(request.getFecha()) != fechaa ){  */                
                     %>
             
+                    
+                   <%
+                       
+                     }
+
+                   }
+                       
+                       %>
         </div>   
     </form>
 </section>

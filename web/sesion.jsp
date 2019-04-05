@@ -1,20 +1,35 @@
+<%@page import="extra.Email"%>
+<%@page import="java.sql.ResultSet"%>
+<%@page import="java.sql.SQLException"%>
+<%@page import="extra.ConexionBD"%>
 <%@page import="java.util.ArrayList"%>
 <%@page import="bean.Categoria"%>
-<%@page import="bean.Capacitador"%>
-<%@page import="bean.Reclutador"%>
-<%@page import="bean.Reclutador"%>
-<%@page import="java.sql.Date"%>
-<%@page import="bean.Empleador"%>
-<%@page import="extra.PasswordUtils"%>
 <%@page import="bean.Cuenta"%>
 <%@page import="bean.Sesion"%>
+<%@page import="bean.Capacitador"%>
+<%@page import="bean.Reclutador"%>
+<%@page import="bean.Empleador"%>
+<%@page import="java.sql.Date"%>
+<%@page import="extra.PasswordUtils"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <% Sesion sesion = (Sesion) session.getAttribute("sesion"); %>
 <jsp:include page="template.header.jsp">
     <jsp:param name="titulo" value="Sesión" />
 </jsp:include>
     <section class="one small">
-    <% if (request.getParameter("f") != null && request.getParameter("f").equalsIgnoreCase("registro")) {
+    <% if (request.getParameter("token") != null) {
+        ConexionBD objCBD = new ConexionBD("bolsadetrabajo");
+        ArrayList aibd = new ArrayList();
+        aibd.add("UPDATE cuenta SET cuen_activa = 1 WHERE cuen_salt = ?");
+        aibd.add(request.getParameter("token"));
+        int ac = objCBD.ejecutarABC(aibd);
+        
+        if (ac > 0) {
+            response.sendRedirect("sesion.jsp?m=activada");
+        } else {
+            response.sendRedirect("sesion.jsp?m=noactiva");
+        }
+    } else if (request.getParameter("f") != null && request.getParameter("f").equalsIgnoreCase("registro")) {
         if (sesion != null && sesion.isIniciada()) {
             response.sendRedirect("/");
         } else {
@@ -28,7 +43,8 @@
                     float longitud = -98.967361f;
 
                     Cuenta cuenta = new Cuenta(request.getParameter("email"), contra, salt, rol, true);
-                    int id = cuenta.registro();
+                    int id = cuenta.registro(request.getServerName() + ":" + request.getServerPort());
+                    
                     if (rol.equalsIgnoreCase("Empleador")) {
                         Empleador emp = new Empleador(cuenta, request.getParameter("emp_nombre"), request.getParameter("emp_app"), request.getParameter("emp_apm"), request.getParameter("emp_sexo"), Long.parseLong(request.getParameter("emp_telefono")), Date.valueOf(request.getParameter("emp_date")), request.getParameter("emp_curp"), request.getParameter("emp_profesion"), request.getParameter("emp_numint"), request.getParameter("emp_numext"), request.getParameter("emp_localidad"), request.getParameter("emp_municipio"), request.getParameter("emp_estado"), request.getParameter("emp_ecivil"), latitud, longitud);
                         rc = emp.registrar(id);
@@ -134,7 +150,7 @@
             </p>
             <p>
                 <label>CURP <font color="red">*</font></label>
-                <input type="tel" required name="emp_curp" placeholder="CURP" pattern="[A-Z]{4}[0-9]{6}[A-Z]{6}[0-9]{2}"
+                <input type="text" required name="emp_curp" placeholder="CURP" pattern="[A-Z]{4}[0-9]{6}[A-Z]{6}[0-9]{2}"
                    data-parsley-minlength="18" minlength="18"
                    data-parsley-maxlength="18" maxlength="18"
                    data-parsley-maxlength-message="El CURP debe tener 18 carácteres"
@@ -319,7 +335,7 @@
             <button type="submit" name="boton" value="registro">Registrarme</button>
             <p>Los campos marcados con <font color="red">*</font> son obligatorios</p>
             <p>¿Ya tienes una cuenta? <a href="sesion.jsp">Inicia sesión</a></p>
-            <p>¿Tienes dudas? <a href="contacto.jsp">Contáctanos</a></p>
+            <p>¿Tienes dudas? <a href="ayuda.jsp">Contáctanos</a></p>
         </div>
         </center>
         </form>
@@ -327,6 +343,89 @@
     } else if (request.getParameter("f") != null && request.getParameter("f").equalsIgnoreCase("recuperar")) { %>
         <div class="container">
             <h2>Recuperar contraseña</h2>
+            <% if (request.getParameter("tk") != null && !request.getParameter("tk").trim().isEmpty()) {
+                ConexionBD objCBD = new ConexionBD("bolsadetrabajo");
+                ArrayList aibd = new ArrayList();
+                aibd.add("SELECT * FROM cuenta WHERE cuen_salt = ?");
+                aibd.add(request.getParameter("tk"));
+                objCBD.consultar(aibd);
+                ResultSet rs = objCBD.getCdr();
+
+                try {
+                    if (!rs.next()) { response.sendRedirect("sesion.jsp?f=recuperar"); }
+                } catch (SQLException ex) {
+                    out.println("<script>alertify.error('" + ex.getLocalizedMessage() + "')</script>");
+                }
+                
+                if (request.getParameter("boton") != null) {
+                    if (request.getParameter("rc_pass1").equals(request.getParameter("rc_pass2"))) { 
+                        String salt = PasswordUtils.getSalt(30);
+                        String contra =  PasswordUtils.generateSecurePassword(request.getParameter("rc_pass1"), salt);
+                        
+                        aibd = new ArrayList();
+                        aibd.add("UPDATE cuenta SET cuen_contrasena = ?, cuen_salt = ? WHERE id_cuenta = ?");
+                        aibd.add(contra);
+                        aibd.add(salt);
+                        aibd.add(rs.getInt("id_cuenta"));
+                        int ac = objCBD.ejecutarABC(aibd);
+                        
+                        if (ac > 0) {
+                            response.sendRedirect("/sesion.jsp?m=ca");
+                        } else {
+                            out.println("<script>alertify.error('No se ha podido actualizar la contraseña')</script>");
+                        }
+                    } else {
+                        out.println("<script>alertify.error('Las contraseñas ingresadas no coinciden')</script>");
+                    }
+                } %>
+            <p>Ingrese la nueva contraseña para la cuenta</p>
+            <form action="" method="post" class="validate" autocomplete="off" data-parsley-errors-messages-disabled><center>
+                <p>
+                    <input type="password" required name="rc_pass1" placeholder="Nueva contraseña">
+                </p>
+                <p>
+                    <input type="password" required name="rc_pass2" placeholder="Repetir nueva contraseña">
+                </p>
+                <button type="submit" name="boton" value="recovery">Actualizar contraseña</button>
+            </center></form>
+            <% } else {
+                if (request.getParameter("boton") != null) {
+                    ConexionBD objCBD = new ConexionBD("bolsadetrabajo");
+                    ArrayList aibd = new ArrayList();
+                    aibd.add("SELECT * FROM cuenta WHERE cuen_correo = ?");
+                    aibd.add(request.getParameter("rc_email"));
+                    objCBD.consultar(aibd);
+                    ResultSet rs = objCBD.getCdr();
+
+                    try {
+                        if (rs.next()) {
+                            String url = request.getServerName() + ":" + request.getServerPort();
+                            Email em = new Email();
+                            em.setRemitente("no-reply@bulkjobs.com");
+                            em.setDestinatario(rs.getString("cuen_correo"));
+                            em.setAsunto("Recuperar contraseña");
+                            em.setCuerpo("<h3>BulkJobs</h3><p>Para actualizar la contraseña de tu cuenta en BulkJobs debes acceder a este enlace: <a href='http://" + url + "/sesion.jsp?f=recuperar&tk=" + rs.getString("cuen_salt") + "'>http://" + url + "/sesion.jsp?f=recuperar&tk=" + rs.getString("cuen_salt") + "</a></p>");
+                            em.enviarCorreo();
+                        }
+                        out.println("<script>alertify.success('Si la cuenta existe, recibirás un correo para cambiar la contraseña');</script>");
+                    } catch (SQLException ex) {
+                        out.println("<script>alertify.error('" + ex.getLocalizedMessage() + "')</script>");
+                    }
+                } %>
+            <p>Para recuperar la contraseña, debes insertar el correo de la cuenta a recuperar. Si la cuenta existe recibiras un correo con el enlace para cambiar la contraseña.</p>
+            <form action="" method="post" class="validate" autocomplete="off" data-parsley-errors-messages-disabled><center>
+                <p>
+                    <input type="email" name="rc_email" placeholder="Correo electrónico">
+                </p>
+                <button type="submit" name="boton" value="recovery">Recuperar contraseña</button>
+            </center></form>
+            <% } %>
+        </div>
+        
+        <div class="container">
+            <p>¿Ya tienes una cuenta? <a href="sesion.jsp">Inicia sesión</a></p>
+            <p>¿No tienes una cuenta? <a href="sesion.jsp?f=registro">Regístrate</a></p>
+            <p>¿Tienes dudas? <a href="contacto.jsp">Contáctanos</a></p>
         </div>
     <% } else if (request.getParameter("f") != null && request.getParameter("f").equalsIgnoreCase("salir")) {
         session.removeAttribute("sesion");
@@ -338,6 +437,12 @@
             if (request.getParameter("m") != null) {
                 if (request.getParameter("m").equalsIgnoreCase("Registro")) {
                     out.println("<script>alertify.success('Te haz registrado correctamente')</script>");
+                } else if (request.getParameter("m").equalsIgnoreCase("Activada")) {
+                    out.println("<script>alertify.success('La cuenta ha sido activada correctamente, ahora puedes iniciar sesion')</script>");
+                } else if (request.getParameter("m").equalsIgnoreCase("NoActiva")) {
+                    out.println("<script>alertify.error('Token de activación no válido')</script>");
+                } else if (request.getParameter("m").equalsIgnoreCase("CA")) {
+                    out.println("<script>alertify.success('Contraseña actualizada correctamente, ahora puedes iniciar sesión con esta contraseña')</script>");
                 }
             } %>
         <div class="container">
@@ -351,8 +456,12 @@
                     } else {
                         boolean is = sesion.iniciarSesion(request.getParameter("correo"), request.getParameter("contrasena"));
                         if (is) {
-                            response.sendRedirect("busqueda.jsp");
-                            session.setAttribute("sesion", sesion);
+                            if (sesion.isActiva()) {
+                                response.sendRedirect("perfil.jsp");
+                                session.setAttribute("sesion", sesion);
+                            } else {
+                                out.println("<script>alertify.error('Debes activar tu cuenta, revisa en tu correo el enlace de activacion');</script>");
+                            }
                         } else {
                             out.println("<script>alertify.error('Comprueba los datos ingresados e intentalo de nuevo');</script>");
                         }
