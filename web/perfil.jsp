@@ -163,7 +163,7 @@ try {
                         <option <%=(perfil.getSexo().equals("F") ? "selected" : "")%> value="F">Femenino</option>
                     </select> </td>
                     <% } else { %>
-                    <td><%= perfil.getSexo() %></td>
+                    <td><%= perfil.getSexoS() %></td>
                     <% } %>
                 </tr>
                 <tr>
@@ -253,7 +253,7 @@ try {
                             <div id="photo" style="background-image: url('subida/cursos/<%=ci.getCurso().getIdCurso() %>.jpg');"></div>
                             <% } else { %>
                             <div id="photo"></div>
-                            <% } %>
+                            <% } %> 
                         </td>
                         <td>
                             <strong><%= ci.getCurso().getNombre() %></strong><br><%= ci.getCurso().getDesc()%>

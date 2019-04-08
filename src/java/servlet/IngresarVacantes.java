@@ -52,32 +52,31 @@ public class IngresarVacantes extends HttpServlet {
             boolean agregar = vacante.agregarVa(); 
             
             if(agregar){ 
-                
                 System.out.println("falta que ingrese imagen");
-            if (request.getPart("img") != null && request.getPart("img").getSize() > 0) {
-                try {
-                    Part part = request.getPart("img");
-                    //working la carpeta/ruta en la que trabajamos 
-                    String workingDir =
-                            getServletContext().getRealPath("../../web/subida/vacantes/");
-                    //Crear archivo en esta carpeta 
-                    File uploads = new File(workingDir);
-                    //part es el archivo que envio (por partes :v) y obtengo el nombre del archico enviado
-                    String fileName = Paths.get(part.getSubmittedFileName()).getFileName().toString();
-                    
-                    if (fileName.endsWith(".jpg") || fileName.endsWith(".png")) {
-                        InputStream fileContent = part.getInputStream(); //de las partes (juntas :v) obtengo el contenido y lo guardo en fileC
-                        File file = new File(uploads, vacante.getId()+ ".jpg"); //del contenido creo un archivo(vacio) con ruta y nombre
-                        Files.copy(fileContent, file.toPath(), StandardCopyOption.REPLACE_EXISTING); //despues copio el contenido de las partes juntas 
-                        
+                if (request.getPart("img") != null && request.getPart("img").getSize() > 0) {
+                    try {
+                        Part part = request.getPart("img");
+                        //working la carpeta/ruta en la que trabajamos 
+                        String workingDir =
+                                getServletContext().getRealPath("../../web/subida/vacantes/");
+                        //Crear archivo en esta carpeta 
+                        File uploads = new File(workingDir);
+                        //part es el archivo que envio (por partes :v) y obtengo el nombre del archico enviado
+                        String fileName = Paths.get(part.getSubmittedFileName()).getFileName().toString();
+
+                        if (fileName.endsWith(".jpg") || fileName.endsWith(".png")) {
+                            InputStream fileContent = part.getInputStream(); //de las partes (juntas :v) obtengo el contenido y lo guardo en fileC
+                            File file = new File(uploads, vacante.getId()+ ".jpg"); //del contenido creo un archivo(vacio) con ruta y nombre
+                            Files.copy(fileContent, file.toPath(), StandardCopyOption.REPLACE_EXISTING); //despues copio el contenido de las partes juntas 
+
+                        }
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
                     }
-                } catch (Exception ex) {
-                    ex.printStackTrace();
+
                 }
-                 
-            }
                 
-                response.sendRedirect("/planes.jsp?m=registrado");
+                response.sendRedirect("/vacantes.jsp?m=registrado");
                 } else {
             }
         }

@@ -75,6 +75,7 @@ public class CursoComprado {
         instBD.add(cuenta.getId());
         int registrar = objCBD.ejecutarABC(instBD);
         if(registrar > 0){
+            id = objCBD.ultimoId();
             return true;
         }
         return false;
@@ -119,6 +120,31 @@ public class CursoComprado {
             ex.printStackTrace();
         }
         return cc;
+    }
+    
+    
+    
+    public static boolean estaComprado(int idCurso, int idCuenta){ //Obtengo el cursoC apartir del id 
+         
+        boolean comprando = false;
+        
+        try {
+            ConexionBD objCBD = new ConexionBD("bolsadetrabajo");
+            ArrayList instBD = new ArrayList();
+            instBD.add("SELECT * from curso_comprado WHERE cuco_curso = ? AND cuco_cuenta = ?");
+            instBD.add(idCurso);
+            instBD.add(idCuenta);
+            objCBD.consultar(instBD);
+            ResultSet rs = objCBD.getCdr();
+            if(rs.next()){
+               comprando = true;
+            }
+            rs.close();
+           objCBD.cerrarConexion();
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+        return comprando;
     }
     
 }

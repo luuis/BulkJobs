@@ -1,6 +1,7 @@
 package servlet;
 
 import extra.ConexionBD;
+import extra.Email;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
@@ -38,11 +39,33 @@ public class EstatusPostulado extends HttpServlet {
                     instBD.add(request.getParameter("postu"));
                     objCBD.ejecutarABC(instBD);
                     // aquí lo del correo de la cita
+                    String url = request.getServerName() + ":" + request.getServerPort();
+                    Email m = new Email();
+                    m.setRemitente("no-reply@bulkjobs.com");
+                    m.setDestinatario(request.getParameter("email"));
+                    m.setAsunto("Has sido aceptado a una vacante");
+                    m.setCuerpo("<p>En buena hora!, Usted ha sido aceptad@ a realizar la entrevista"
+                            + " de empleo para el trabajo seleccionado. Inicie sesión y concatese con el reclutador en " +
+                            "<a target='blank' href='http://" + url + "/mensajes.jsp?c=" + request.getParameter("chat") + "'>" +
+                            "http://" + url + "/mensajes.jsp?c=" + request.getParameter("chat") + "</a></p>");
+                    m.enviarCorreo(); 
+                    
                     out.println("Se ha aceptado la vacante");
                 } else {
                     instBD.add("UPDATE postulacion SET post_estado = 2 WHERE id_postulacion = ?");
                     instBD.add(request.getParameter("postu"));
                     objCBD.ejecutarABC(instBD);
+                    //aqui va el rechazo de la cita
+                    Email m = new Email();
+                    m.setRemitente("no-reply@bulkjobs.com");
+                    m.setDestinatario(request.getParameter("email"));
+                    m.setAsunto("Notificación Vacante");
+                    m.setCuerpo("<p>Lamentamos informale que usted ha sido rechazado para realizar la entrevistra de "
+                            + "empleo en la vacante solicitada. Le recordamos que contamos con diversas vacantes que "
+                            + "lo esperan para portularse.</p>"
+                            + "<p>Atte. Coordinación de BulkJobs</p>");
+                    m.enviarCorreo(); 
+                    
                     out.println("Se ha rechazado la vacante");
                 }
             

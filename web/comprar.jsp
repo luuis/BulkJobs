@@ -1,3 +1,5 @@
+<%@page import="extra.ConexionBD"%>
+<%@page import="java.util.ArrayList"%>
 <%@page import="bean.Cuenta"%>
 <%@page import="bean.Empleador"%>
 <%@page import="java.text.DateFormat"%>
@@ -17,8 +19,8 @@
 <% Sesion sesion = (Sesion) session.getAttribute("sesion"); %>
 <jsp:include page="template.header.jsp">
     <jsp:param name="titulo" value="Compra" />
-    <jsp:param name="roles" value="reclutador" />
-    <jsp:param name="roles" value="empleador" />
+    <jsp:param name="roles" value="reclutador,empleador" />
+  
     
 </jsp:include>
 <form action="" method="post" autocomplete="off" data-parsley-errors-messages-disabled class="validate">
@@ -26,6 +28,7 @@
     <% if (request.getParameter("comprar") != null) {
         if (request.getParameter("tipo").equals("curso")) {
             CursoComprado cc = new CursoComprado(Curso.obtenerCurso(Integer.parseInt(request.getParameter("id"))), Cuenta.obtenerCuenta(sesion.getId()));      
+          
             
             
             Tarjeta t = Tarjeta.obtenerTarjeta(Long.parseLong(request.getParameter("numero")));
@@ -35,6 +38,15 @@
                     boolean registrado = cc.registrarC();
             
                     if (registrado) {
+                        if (sesion.esEmpleador()) {
+                            ConexionBD objCBD = new ConexionBD("bolsadetrabajo");
+                            ArrayList instruccionBD = new ArrayList();
+                            instruccionBD.add("INSERT INTO curso_inscrito VALUES (null, ?, ?, NOW());");
+                            instruccionBD.add(request.getParameter("id"));
+                            instruccionBD.add(sesion.getId());
+                            objCBD.ejecutarABC(instruccionBD);
+                        }
+                        
                         out.println("<script>alertify.success('Se ha registrado');</script>");
                         t.quitarSaldo(Double.parseDouble(request.getParameter("total")));
                         Movimiento.registrar(t, "Pago de compra: Curso", Double.parseDouble(request.getParameter("total")));

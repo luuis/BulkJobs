@@ -1,3 +1,5 @@
+<%@page import="bean.CursoComprado"%>
+<%@page import="bean.CursoInscrito"%>
 <%@page import="java.util.ArrayList"%>
 <%@page import="bean.Curso"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
@@ -53,9 +55,17 @@
                 <td><%=cursos.get(i).getNombre()%></td>
                 <td><%=cursos.get(i).getDesc()%></td>
                 <td><%=cursos.get(i).getPrecio()%></td>
-                <% if (sesion.esReclutador() && sesion.esEmpleador()) { %>
+                <% if (sesion.esReclutador() || sesion.esEmpleador()) { 
+                
+                if(CursoComprado.estaComprado(cursos.get(i).getIdCurso(), sesion.getId())){ %>
+                <td><center>Ya esta comprado</center></td> 
+                <% }else{
+
+
+                
+                %>
                 <td><center><a href="comprar.jsp?c=<%=cursos.get(i).getIdCurso()%>"><button><i class="fas fa-shopping-cart"></i> Comprar</button></a></center></td>
-                <% } else { %>
+                <% }} else { %>
                 <td><center><a href="curso_editar.jsp?i=<%=cursos.get(i).getIdCurso()%>"><button><i class="fas fa-edit"></i> Editar</button></a></center></td>
                 <td><center><a href="cursos.jsp?e=<%=cursos.get(i).getIdCurso()%>"><button><i class="fas fa-trash"></i> Eliminar</button></a></center></td>
                 <% } %>

@@ -13,24 +13,20 @@
         <div class="container">
             <center><h2>Catalogo Vacantes</h2></center>
             <style>
-                .pcv{
-                    display: none;
-                    
-                }
+            .pcv {
+                display: none;
+            }
             </style>
-            
             <script>
             $(function() {
-                
-             $('.apc').on('click', function() {
-                 var v = $(this).data('pc');
-                 $('#pc-'+v).slideToggle();
-             });
+                $('.apc').on('click', function() {
+                    var v = $(this).data('pc');
+                    $('#pc-'+v).slideToggle();
+                });
             });    
             </script>
             
-            <% 
-            Date fechaActual = new Date();
+            <% Date fechaActual = new Date();
             ArrayList<PlanComprado> planesComprados = PlanComprado.obtenerPlanCompradoRecl(sesion.getId());
             if(planesComprados.size() > 0){
                 for(PlanComprado pc : planesComprados){
@@ -40,10 +36,8 @@
                     <tr>
                         <% if (fechaActual.before(pc.getFechaLimite())) { %>
                         <td>
-                            <h4>Plan <%= pc.getPlan().getNombre()%> &middot;
-                                Comprado el <%=pc.getFecha() %> &middot;
-                                Caduca el <%=pc.getFechaLimite() %> - Activo</h4>
-                                <p><%=av.size() %> de <%=pc.getPlan().getVacantes()%> Vacantes Agregadas<p>
+                            <h4>Plan <%= pc.getPlan().getNombre()%> &middot; Comprado el <%=pc.getFecha() %> &middot; Caduca el <%=pc.getFechaLimite() %> - Activo</h4>
+                            <p><%=av.size() %> de <%=pc.getPlan().getVacantes()%> Vacantes Agregadas<p>
                         </td>
                         <td style="text-align: right">
                             <a><button type="button" class="apc" data-pc="<%=pc.getId()%>"><i class="fas fa-plus"></i></button></a>
@@ -54,7 +48,7 @@
                         </td>  
                         <% } else { %>
                         <td>
-                            <h4>Plan <%= pc.getPlan().getNombre()%> &middot; Caducado
+                            <h4>Plan <%= pc.getPlan().getNombre()%> &middot; Caducado</h4>
                             <p><%=av.size() %> de <%=pc.getPlan().getVacantes()%> Vacantes Agregadas<p>
                         </td>
                         <td style="text-align: right">
@@ -71,22 +65,8 @@
                 <p><%=v.getTitulo()%> - <a href="vacante.jsp?v=<%=v.getId()%>">Ver más</a> - <a href="postulados.jsp?v=<%=v.getId()%>">Ver postulados</a></p>
                 <% } %>
             </article>
-            
-                <%}
-                    }else{
-                    /*Date fechaa = new Date();
-                    ArrayList <Vacante> vacante = Vacante.obtenerVacante(sesion.getId());
-                    if( vacante.get(request.getFecha()) != fechaa ){  */                
-                    %>
-            
-                    
-                   <%
-                       
-                     }
-
-                   }
-                       
-                       %>
+                <% }
+            } %>
         </div>   
     </form>
 </section>

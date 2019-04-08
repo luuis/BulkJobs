@@ -136,7 +136,7 @@ $('#inscribirte').on('click', function() {
             idCurso: cur
         }, function(data, status) {
             alertify.success(data);
-            //window.location.reload();
+            window.location.reload();
         }); //PUSE POST PARA AJAX JEJE 
     }
 });
@@ -171,4 +171,24 @@ $('#calif i').on('mouseover', function () {
             window.location.reload(); 
         });
     });
+    
+    
 });
+
+    
+    
+    $('#finalizar').on('click', function() {
+     
+
+        /*POST tiene 3 atributos: la pagina que se va a mandar, los campos, y funcion que se hara despuess*/
+        $.post('/FinalizarC',
+        /*Enviar los campos al Servlets*/
+        { 
+            
+           idCursoInscrito: $("#cur").val(), //recuperar el input y luego el valor
+
+        }, function(data, status) {
+            alertify.success(data); //alertify no es nativa, es una libreria
+            window.location.reload(); 
+        });
+    });
