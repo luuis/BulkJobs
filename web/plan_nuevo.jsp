@@ -37,9 +37,9 @@
             <p>
                 <label>Tiempo de Vacantes<font color="red">*</font></label>
                 <select name="tiempo" placeholder="Duracion">
-                    <option value="2678400">1 Mes</option> 
-                    <option value="5356800">2 Meses</option>
-                    <option value="8035200">3 Meses</option>
+                    <option value="2592000">1 mes</option> 
+                    <option value="5184000">2 meses</option>
+                    <option value="7776000">3 meses</option>
                 </select>
             </p>
             <p>

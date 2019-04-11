@@ -92,7 +92,7 @@ public class PlanComprado {
             objCBD.consultar(instBD);
             ResultSet rs = objCBD.getCdr(); 
             while (rs.next()) {
-                planComprado = new PlanComprado(rs.getInt(1), Plan.obtenerPlan(rs.getInt(2)), Reclutador.obtenerCuenta(rs.getInt(3)), rs.getDate(4), rs.getDate(5));
+                planComprado = new PlanComprado(rs.getInt(1), Plan.obtenerPlan(rs.getInt(2)), Reclutador.obtenerCuenta(rs.getInt(3)), new Date(rs.getTimestamp(4).getTime()), new Date(rs.getTimestamp(5).getTime()));
             }
         } catch (SQLException ex) {
             ex.printStackTrace();
@@ -129,7 +129,7 @@ public class PlanComprado {
             objCBD.consultar(instBD);
             ResultSet rs = objCBD.getCdr();
             while (rs.next()) {
-                PlanComprado p = new PlanComprado(rs.getInt(1), Plan.obtenerPlan(rs.getInt(2)), Reclutador.obtenerCuenta(rs.getInt(3)), rs.getDate(4), rs.getDate(5));
+                PlanComprado p = new PlanComprado(rs.getInt(1), Plan.obtenerPlan(rs.getInt(2)), Reclutador.obtenerCuenta(rs.getInt(3)), new Date(rs.getTimestamp(4).getTime()), new Date(rs.getTimestamp(5).getTime()));
                 planComprado.add(p);
             } 
         } catch (SQLException ex) {

@@ -102,7 +102,7 @@ public class CursoInscrito {
             objCBD.consultar(instBD);
             ResultSet rs = objCBD.getCdr();
             while(rs.next()){
-               CursoInscrito ci= new CursoInscrito(rs.getInt("id_curso_inscrito"), CursoComprado.obtenerCurso(rs.getInt("cuin_curso")), Empleador.obtenerCuenta(rs.getInt("cuin_cuenta")), rs.getDate("cuin_fecha_insc"));
+               CursoInscrito ci = new CursoInscrito(rs.getInt("id_curso_inscrito"), CursoComprado.obtenerCurso(rs.getInt("cuin_curso")), Empleador.obtenerCuenta(rs.getInt("cuin_cuenta")), new Date(rs.getTimestamp("cuin_fecha_insc").getTime()));
                cursosIns.add(ci);
             }
             
@@ -123,7 +123,7 @@ public class CursoInscrito {
             objCBD.consultar(instBD);
             ResultSet rs = objCBD.getCdr();
             while(rs.next()){
-                cursosIns= new CursoInscrito(rs.getInt("id_curso_inscrito"), CursoComprado.obtenerCurso(rs.getInt("cuin_curso")), Empleador.obtenerCuenta(rs.getInt("cuin_cuenta")), rs.getDate("cuin_fecha_insc"));
+                cursosIns = new CursoInscrito(rs.getInt("id_curso_inscrito"), CursoComprado.obtenerCurso(rs.getInt("cuin_curso")), Empleador.obtenerCuenta(rs.getInt("cuin_cuenta")), new Date(rs.getTimestamp("cuin_fecha_insc").getTime()));
             }
         } catch (SQLException ex) {
             Logger.getLogger(CursoInscrito.class.getName()).log(Level.SEVERE, null, ex);

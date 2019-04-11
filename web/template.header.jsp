@@ -9,7 +9,9 @@
 ConexionBD objCBD = new ConexionBD("bolsadetrabajo");
 Sesion sh = (Sesion) session.getAttribute("sesion"); %>
 <% if (request.getParameter("roles") != null) {
-    if (!sh.tienePermisos(request.getParameter("roles"))) out.print("<script>window.location = 'sesion.jsp';</script>");
+    if (!sh.tienePermisos(request.getParameter("roles"))) {
+        out.print("<script>window.location = 'sesion.jsp';</script>");
+    }
 } %>
 <!DOCTYPE html>
 <html>
@@ -64,11 +66,14 @@ Sesion sh = (Sesion) session.getAttribute("sesion"); %>
                         <% if (sh.esCapacitador() || sh.esReclutador() || sh.esAdmin()) { %>
                         <li>
                             <a href="planesp.jsp" aria-haspopup="true">Publicidad</a>
-                            <% if (sh.esAdmin()) { %>
                             <ul class="dropdown" aria-label="submenu">
+                                <% if (sh.esAdmin()) { %>
                                 <li><a href="planesp.jsp">Administrar Planes Publicitarios</a></li>
                                 <li><a href="planp_nuevo.jsp">Agregar Plan Publicitario</a></li>
-                            </ul><% } %>
+                                <% } else { %>
+                                <li><a href="publicidad.jsp">Mis anuncios</a></li>
+                                <% } %>
+                            </ul>
                         </li>
                         <% }
                         if (sh.esAdmin()) { %>

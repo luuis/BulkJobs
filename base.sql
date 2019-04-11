@@ -533,7 +533,7 @@ CREATE TABLE IF NOT EXISTS `plan_publ_comprado` (
   `id_plan_publ_comprado` int(11) NOT NULL AUTO_INCREMENT,
   `ppco_plan` int(11) NOT NULL,
   `ppco_cuenta` int(11) NOT NULL,
-  `ppco_vinculo` int(200) DEFAULT NULL,
+  `ppco_vinculo` varchar(200) DEFAULT NULL,
   `ppco_fecha` datetime NOT NULL,
   `ppco_fecha_limite` datetime NOT NULL,
   PRIMARY KEY (`id_plan_publ_comprado`),

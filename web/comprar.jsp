@@ -1,27 +1,15 @@
+<%@page import="extra.TimeTools"%>
 <%@page import="extra.ConexionBD"%>
 <%@page import="java.util.ArrayList"%>
-<%@page import="bean.Cuenta"%>
-<%@page import="bean.Empleador"%>
+<%@page import="bean.*"%>
 <%@page import="java.text.DateFormat"%>
 <%@page import="java.text.SimpleDateFormat"%>
-<%@page import="bean.PlanPComprado"%>
-<%@page import="bean.PlanP"%>
 <%@page import="java.util.Date"%>
-<%@page import="bean.PlanComprado"%>
-<%@page import="bean.Plan"%>
-<%@page import="bean.Movimiento"%>
-<%@page import="bean.Banco"%>
-<%@page import="bean.Tarjeta"%>
-<%@page import="bean.Reclutador"%>
-<%@page import="bean.CursoComprado"%>
-<%@page import="bean.Curso"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <% Sesion sesion = (Sesion) session.getAttribute("sesion"); %>
 <jsp:include page="template.header.jsp">
     <jsp:param name="titulo" value="Compra" />
     <jsp:param name="roles" value="reclutador,empleador" />
-  
-    
 </jsp:include>
 <form action="" method="post" autocomplete="off" data-parsley-errors-messages-disabled class="validate">
 <section class="two small">
@@ -29,7 +17,7 @@
         if (request.getParameter("tipo").equals("curso")) {
             CursoComprado cc = new CursoComprado(Curso.obtenerCurso(Integer.parseInt(request.getParameter("id"))), Cuenta.obtenerCuenta(sesion.getId()));      
             
-            Tarjeta t = Tarjeta.obtenerTarjeta(Long.parseLong(request.getParameter("numero")));
+            Tarjeta t = Tarjeta.obtenerTarjeta(Long.parseLong(request.getParameter("numero")), Integer.parseInt(request.getParameter("ccv")));
             
             if (t != null) {
                 if (t.getSaldo() >= Double.parseDouble(request.getParameter("total"))) {
@@ -48,12 +36,13 @@
                         out.println("<script>alertify.success('Se ha registrado');</script>");
                         t.quitarSaldo(Double.parseDouble(request.getParameter("total")));
                         Movimiento.registrar(t, "Pago de compra: Curso", Double.parseDouble(request.getParameter("total")));
+                        response.sendRedirect("perfil.jsp");
                     } else {
                         out.println("<script>alertify.error('No se ha registrado');</script>");
                     }
             
                 } else {
-                    out.println("<script>alertify.error('No tines saldo suficiente, intente con otra');</script>");
+                    out.println("<script>alertify.error('No tienes saldo suficiente, intente con otra');</script>");
                 }
             } else {
                 out.println("<script>alertify.error('Comprueba los datos de la tarjeta e intentelo de nuevo');</script>");
@@ -63,7 +52,7 @@
             fl.setTime(fl.getTime() + (Long.parseLong(request.getParameter("tiempo")) * 1000)); 
             PlanComprado pc = new PlanComprado(Plan.obtenerPlan(Integer.parseInt(request.getParameter("id"))), Reclutador.obtenerCuenta(sesion.getId()), fl);
             
-            Tarjeta t = Tarjeta.obtenerTarjeta(Long.parseLong(request.getParameter("numero")));
+            Tarjeta t = Tarjeta.obtenerTarjeta(Long.parseLong(request.getParameter("numero")), Integer.parseInt(request.getParameter("ccv")));
             
             if (t != null) {
                 if (t.getSaldo() >= Double.parseDouble(request.getParameter("total"))) {
@@ -73,11 +62,12 @@
                         out.println("<script>alertify.success('Se ha registrado');</script>");
                         t.quitarSaldo(Double.parseDouble(request.getParameter("total")));
                         Movimiento.registrar(t, "Pago de compra: Plan", Double.parseDouble(request.getParameter("total")));
+                        response.sendRedirect("vacantes.jsp");
                     } else {
                          out.println("<script>alertify.error('No se ha registrado');</script>");
                     }
                 } else {
-                    out.println("<script>alertify.error('No tines saldo suficiente, intente con otra');</script>");
+                    out.println("<script>alertify.error('No tienes saldo suficiente, intente con otra');</script>");
                 }
             } else {
                 out.println("<script>alertify.error('Comprueba los datos de la tarjeta e intentelo de nuevo');</script>");
@@ -89,7 +79,7 @@
             y eso lo convierto a long(porque asi tiene que ser) y al final lo agrega al tiempo(cuando lo obtenga)*/
             PlanPComprado ppc = new PlanPComprado(PlanP.obtenerPlanP(Integer.parseInt(request.getParameter("id"))), Reclutador.obtenerCuenta(sesion.getId()), fl);
             
-            Tarjeta t = Tarjeta.obtenerTarjeta(Long.parseLong(request.getParameter("numero")));
+            Tarjeta t = Tarjeta.obtenerTarjeta(Long.parseLong(request.getParameter("numero")), Integer.parseInt(request.getParameter("ccv")));
             
             if (t != null) {
                 if (t.getSaldo() >= Double.parseDouble(request.getParameter("total"))) {
@@ -99,22 +89,27 @@
                         out.println("<script>alertify.success('Se ha registrado');</script>");
                         t.quitarSaldo(Double.parseDouble(request.getParameter("total")));
                         Movimiento.registrar(t, "Pago de compra: Plan Publicitario", Double.parseDouble(request.getParameter("total")));
+                        response.sendRedirect("publicidad.jsp");
                     } else {
                          out.println("<script>alertify.error('No se ha registrado');</script>");
                     }
                 } else {
-                    out.println("<script>alertify.error('No tines saldo suficiente, intente con otra');</script>");
+                    out.println("<script>alertify.error('No tienes saldo suficiente, intente con otra');</script>");
                 }
             } else {
                 out.println("<script>alertify.error('Comprueba los datos de la tarjeta e intentelo de nuevo');</script>");
             }    
         } else if(request.getParameter("tipo").equals("RenovarPlan")) {
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             Date fl = sdf.parse(request.getParameter("limite"));
             
-            fl.setTime(fl.getTime() + (Long.parseLong(request.getParameter("tiempo")) * 1000)); 
+            if (fl.before(new Date())) {
+                fl.setTime(new Date().getTime() + (Long.parseLong(request.getParameter("tiempo")) * 1000));
+            } else {
+                fl.setTime(fl.getTime() + (Long.parseLong(request.getParameter("tiempo")) * 1000)); 
+            }
             
-            Tarjeta t = Tarjeta.obtenerTarjeta(Long.parseLong(request.getParameter("numero")));
+            Tarjeta t = Tarjeta.obtenerTarjeta(Long.parseLong(request.getParameter("numero")), Integer.parseInt(request.getParameter("ccv")));
             
             if (t != null) {
                 if (t.getSaldo() >= Double.parseDouble(request.getParameter("total"))) {
@@ -125,11 +120,13 @@
                         t.quitarSaldo(Double.parseDouble(request.getParameter("total")));
 
                         Movimiento.registrar(t, "Pago de renovacion: Plan", Double.parseDouble(request.getParameter("total")));
+                        
+                        response.sendRedirect("vacantes.jsp");
                     } else {
                          out.println("<script>alertify.error('No se ha renovado');</script>");
                     }
                 } else {
-                    out.println("<script>alertify.error('No tines saldo suficiente, intente con otra');</script>");
+                    out.println("<script>alertify.error('No tienes saldo suficiente, intente con otra');</script>");
                 }
             } else {
                 out.println("<script>alertify.error('Comprueba los datos de la tarjeta e intentelo de nuevo');</script>");
@@ -275,9 +272,9 @@
                     <td><%=c.getPrecio()%></td>
                 </tr>
             </table>
-            <input type="text" name="tipo" value="curso">
-            <input type="text" name="id" value="<%=c.getIdCurso()%>">
-            <input type="text" name="total" value="<%=c.getPrecio()%>">
+            <input type="hidden" name="tipo" value="curso">
+            <input type="hidden" name="id" value="<%=c.getIdCurso()%>">
+            <input type="hidden" name="total" value="<%=c.getPrecio()%>">
                 <% } else {
                     response.sendRedirect("cursos.jsp");
                 }
@@ -295,17 +292,17 @@
                 </tr>
                 <tr>
                     <td>Tiempo:</td>
-                    <td><%=p.getTiempo()%></td>
+                    <td><%=TimeTools.getTimeFrom(p.getTiempo())%></td>
                 </tr>
                 <tr>
                     <th>Total</th>
                     <td><%=p.getPrecio()%></td>
                 </tr>
             </table>
-            <input type="text" name="tipo" value="plan">
-            <input type="text" name="id" value="<%=p.getIdPlan()%>">
-            <input type="text" name="tiempo" value="<%=p.getTiempo()%>">
-            <input type="text" name="total" value="<%=p.getPrecio()%>">
+            <input type="hidden" name="tipo" value="plan">
+            <input type="hidden" name="id" value="<%=p.getIdPlan()%>">
+            <input type="hidden" name="tiempo" value="<%=p.getTiempo()%>">
+            <input type="hidden" name="total" value="<%=p.getPrecio()%>">
                 <% } else {
                     response.sendRedirect("planes.jsp");
                 }
@@ -323,17 +320,17 @@
                 </tr>
                 <tr>
                     <td>Tiempo:</td>
-                    <td><%=pp.getTiempo()%></td>
+                    <td><%=TimeTools.getTimeFrom(pp.getTiempo())%></td>
                 </tr>
                 <tr>
                     <th>Total</th>
                     <td><%=pp.getPrecio()%></td>
                 </tr>
             </table>
-            <input type="text" name="tipo" value="planp">
-            <input type="text" name="id" value="<%=pp.getIdPlanP()%>">
-            <input type="text" name="tiempo" value="<%=pp.getTiempo()%>">
-            <input type="text" name="total" value="<%=pp.getPrecio()%>">
+            <input type="hidden" name="tipo" value="planp">
+            <input type="hidden" name="id" value="<%=pp.getIdPlanP()%>">
+            <input type="hidden" name="tiempo" value="<%=pp.getTiempo()%>">
+            <input type="hidden" name="total" value="<%=pp.getPrecio()%>">
                 <% } else {
                     response.sendRedirect("planesp.jsp");
                 }
@@ -351,20 +348,20 @@
                 </tr>
                 <tr>
                     <td>Tiempo:</td>
-                    <td><%=rp.getPlan().getTiempo()%> más</td>
+                    <td><%=TimeTools.getTimeFrom(rp.getPlan().getTiempo(), true)%> más</td>
                 </tr>
                 <tr>
                     <th>Total</th>
                     <td><%=rp.getPlan().getPrecio()%></td>
                 </tr>
             </table>
-            <input type="text" name="tipo" value="RenovarPlan">
-            <input type="text" name="id" value="<%=rp.getId() %>">
-            <input type="text" name="tiempo" value="<%=rp.getPlan().getTiempo()%>">
-            <% SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy-MM-dd HH-mm-ss");
+            <input type="hidden" name="tipo" value="RenovarPlan">
+            <input type="hidden" name="id" value="<%=rp.getId() %>">
+            <input type="hidden" name="tiempo" value="<%=rp.getPlan().getTiempo()%>">
+            <% SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             String x = sdf2.format(rp.getFechaLimite()); %>
-            <input type="text" name="limite" value="<%=x%>">
-            <input type="text" name="total" value="<%=rp.getPlan().getPrecio()%>">
+            <input type="hidden" name="limite" value="<%=x%>">
+            <input type="hidden" name="total" value="<%=rp.getPlan().getPrecio()%>">
                 <% } else {
                     response.sendRedirect("vacantes.jsp");
                 }

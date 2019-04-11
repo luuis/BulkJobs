@@ -1,3 +1,5 @@
+<%@page import="java.util.Date"%>
+<%@page import="java.util.Date"%>
 <%@page import="bean.Empleador"%>
 <%@page import="bean.Curriculum"%>
 <%@page import="java.sql.ResultSet"%>
@@ -54,7 +56,7 @@
                 objCBD.consultar(instBD);
                 ResultSet rs = objCBD.getCdr();
                 while (rs.next()) {
-                    curr = new Curriculum(rs.getInt(1), Empleador.obtenerCuenta(rs.getInt(2)), rs.getString(3), rs.getDate(4));
+                    curr = new Curriculum(rs.getInt(1), Empleador.obtenerCuenta(rs.getInt(2)), rs.getString(3), new Date(rs.getTimestamp(4).getTime()));
                 }
             } %>
         <script>

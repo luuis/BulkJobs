@@ -143,13 +143,14 @@ public class Tarjeta {
         return tarjeta;
     }
     
-    public static Tarjeta obtenerTarjeta(long num) {
+    public static Tarjeta obtenerTarjeta(long num, int ccv) {
         Tarjeta tarjeta = null;
         try {
             ConexionBD objCBD = new ConexionBD("banco");
             ArrayList instBD = new ArrayList();
-            instBD.add("SELECT * FROM tarjeta WHERE tarj_numero = ?");
+            instBD.add("SELECT * FROM tarjeta WHERE tarj_numero = ? AND tarj_ccv = ?");
             instBD.add(num);
+            instBD.add(ccv);
             objCBD.consultar(instBD);
             ResultSet rs = objCBD.getCdr();
             while (rs.next()) {
@@ -164,16 +165,21 @@ public class Tarjeta {
     }
     
     public void quitarSaldo(double s){
-        
         ConexionBD objCBD = new ConexionBD("banco");
             ArrayList instBD = new ArrayList();
             instBD.add("UPDATE tarjeta SET tarj_saldo = tarj_saldo - ? WHERE id_tarjeta = ?");
             instBD.add(s);
             instBD.add(id);
             objCBD.ejecutarABC(instBD);
-            
-                    
-        
+    }
+    
+    public void añadirSaldo(double s){
+        ConexionBD objCBD = new ConexionBD("banco");
+            ArrayList instBD = new ArrayList();
+            instBD.add("UPDATE tarjeta SET tarj_saldo = tarj_saldo + ? WHERE id_tarjeta = ?");
+            instBD.add(s);
+            instBD.add(id);
+            objCBD.ejecutarABC(instBD);
     }
     
 }

@@ -105,12 +105,10 @@ public class PlanPComprado {
         
         ConexionBD objCBD = new ConexionBD("bolsadetrabajo");
         ArrayList instBD = new ArrayList();
-        instBD.add("INSERT INTO plan_publ_comprado values(null, ?, ?, now(), ?)"); 
+        instBD.add("INSERT INTO plan_publ_comprado values(null, ?, ?, null, NOW(), ?)"); 
         instBD.add(planc.getIdPlanP());
         instBD.add(ppcue.getId());
-        
         SimpleDateFormat sdf = new SimpleDateFormat("YYYY/MM/dd HH:mm:ss");
-        
         instBD.add(sdf.format(fechaF));
         
         int registrarP = objCBD.ejecutarABC(instBD);
@@ -123,24 +121,17 @@ public class PlanPComprado {
     }
     
     public static PlanPComprado obtenerP(){
-         PlanPComprado ppc = null;
-         
+        PlanPComprado ppc = null;
         try {
-           
-            
             ConexionBD objCBD = new ConexionBD("bolsadetrabajo");
             ArrayList instBD = new ArrayList();
-            instBD.add("SELECT * FROM plan_publ_comprado ORDER BY RAND() LIMIT 1 ");
+            instBD.add("SELECT * FROM plan_publ_comprado WHERE ppco_vinculo IS NOT NULL ORDER BY RAND() LIMIT 1 ");
             
             objCBD.consultar(instBD);
             ResultSet rs = objCBD.getCdr();
             while(rs.next()){
-                ppc = new PlanPComprado(rs.getInt("id_plan_publ_comprado"), PlanP.obtenerPlanP(rs.getInt("ppco_plan")), Reclutador.obtenerCuenta(rs.getInt("ppco_cuenta")), rs.getString("ppco_vinculo"), rs.getDate("ppco_fecha"), rs.getDate("ppco_fecha_limite"));
-                
+                ppc = new PlanPComprado(rs.getInt("id_plan_publ_comprado"), PlanP.obtenerPlanP(rs.getInt("ppco_plan")), Reclutador.obtenerCuenta(rs.getInt("ppco_cuenta")), rs.getString("ppco_vinculo"), new Date(rs.getTimestamp("ppco_fecha").getTime()), new Date(rs.getTimestamp("ppco_fecha_limite").getTime()));
             }
-            
-            
-            
         } catch (SQLException ex) {
             Logger.getLogger(PlanPComprado.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -160,7 +151,7 @@ public class PlanPComprado {
             while (rs.next()) {
                 PlanPComprado pp = new PlanPComprado(rs.getInt(1),
                         PlanP.obtenerPlanP(rs.getInt(2)),
-                        Reclutador.obtenerCuenta(rs.getInt(3)), rs.getString(4), rs.getDate(5), rs.getDate(6));
+                        Reclutador.obtenerCuenta(rs.getInt(3)), rs.getString(4), new Date(rs.getTimestamp(5).getTime()), new Date(rs.getTimestamp(6).getTime()));
                 planComprado.add(pp);
             } 
         } catch (SQLException ex) {
@@ -181,7 +172,7 @@ public class PlanPComprado {
             ResultSet rs = objCBD.getCdr();
             while (rs.next()) {
                 planComprado = new PlanPComprado(rs.getInt(1), PlanP.obtenerPlanP(rs.getInt(2)),
-                        Reclutador.obtenerCuenta(rs.getInt(3)), rs.getString(4), rs.getDate(5), rs.getDate(6));
+                        Reclutador.obtenerCuenta(rs.getInt(3)), rs.getString(4), new Date(rs.getTimestamp(5).getTime()), new Date(rs.getTimestamp(6).getTime()));
             } 
         } catch (SQLException ex) {
             ex.printStackTrace();

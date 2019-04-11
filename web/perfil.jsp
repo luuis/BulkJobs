@@ -63,7 +63,6 @@ try {
             <center><p>Calificación: <%= Evaluacion.obtenerProm(id) %><br>
                     Mi calificación: <%= Evaluacion.obtenerCal(id, sesion.getId()) %></p></center>
             <input type="hidden" id="idCuenta" value="<%= cuenta.getId()%>">
-            
             <input type="hidden" id="idEvalu" value="<%= sesion.getId()%>">
             <center id="evaluar">
                 <i title="Lametable" data-calif="1" class="far fa-star fa-lg fa-fw"></i>
@@ -78,17 +77,19 @@ try {
         </div>
         
         <div class="container">
-            <%
-            ArrayList<Evaluacion> evaluaciones = Evaluacion.obtenerEvaluaciones();
+            <% ArrayList<Evaluacion> evaluaciones = Evaluacion.obtenerEvaluaciones();
             if(evaluaciones.size() > 0){
                 for(Evaluacion ev : evaluaciones){%>
                 <article>
                     <strong><%= ev.getEmpleador().getNombre() %></strong><br><%= ev.getComen() %>
                 </article>
                 <% }
-                
             } else {
-                out.println("Se el primero en evaluar");
+                if (sesion.isIniciada() && (sesion.getId() == cuenta.getId())) {
+                    out.println("Sin evaluaciones");
+                } else {
+                    out.println("Se el primero en evaluar");
+                }
             } %>
         </div>
         <% } %>
@@ -243,27 +244,26 @@ try {
             <% ArrayList<CursoInscrito> cursosInscritos = CursoInscrito.ObtenerCI(id);
             if (cursosInscritos.size() > 0){
                 for (CursoInscrito ci : cursosInscritos  ){%>
-            <article>
+            <article class="np">
                 <table width="100%"> 
                     <tr>
                         <td width="100px">
-                            <%
-                            File fotoC = new File(contextPath + "../../web/subida/cursos/" + ci.getCurso().getCurso().getIdCurso()+ ".jpg");
+                            <a href="curso.jsp?c=<%= ci.getCurso().getId()%>"><% File fotoC = new File(contextPath + "../../web/subida/cursos/" + ci.getCurso().getCurso().getIdCurso()+ ".jpg");
                             if (fotoC.exists()) { %>
-                            <div id="photo" style="background-image: url('subida/cursos/<%=ci.getCurso().getCurso().getIdCurso() %>.jpg');"></div>
+                            <div id="picture" style="background-image: url('subida/cursos/<%=ci.getCurso().getCurso().getIdCurso() %>.jpg');"></div>
                             <% } else { %>
-                            <div id="photo"></div>
-                            <% } %> 
+                            <div id="picture"></div>
+                            <% } %></a>
                         </td>
-                        <td>
+                        <td style="padding: 10px">
                             <strong><%= ci.getCurso().getCurso().getNombre() %></strong><br><%= ci.getCurso().getCurso().getDesc()%>
-                            <center><a href="curso.jsp?c=<%= ci.getCurso().getId()%>"><button type="submit" name="boton" value="inscrito">Inscribirse</button></a></center> 
+                            <center><a href="curso.jsp?c=<%= ci.getCurso().getId()%>"><button type="submit" name="boton" value="inscrito">Más información</button></a></center> 
                         </td>
                     </tr>
                 </table>
             </article>
             <% } } else { %>
-            Este Empleador no cuenta con Cursos
+            <center>Este empleador no cuenta con cursos actualmente</center>
             <% } %>
         </div>      
         <% } %>
@@ -298,26 +298,26 @@ try {
              <% ArrayList<CursoComprado> cursosComprados = CursoComprado.ObtenerC(id);
              if (cursosComprados.size() > 0) {
                 for (CursoComprado cc : cursosComprados ){%>
-            <article>
+            <article class="np">
                 <table width="100%"> 
                     <tr>
                         <td width="100px">
-                        <% File fotoC = new File(contextPath + "../../web/subida/cursos/" + cc.getCurso().getIdCurso()+ ".jpg");
+                        <a href="curso.jsp?c=<%= cc.getId() %>"><% File fotoC = new File(contextPath + "../../web/subida/cursos/" + cc.getCurso().getIdCurso()+ ".jpg");
                         if (fotoC.exists()) { %>
-                            <div id="photo" style="background-image: url('subida/cursos/<%=cc.getCurso().getIdCurso() %>.jpg');"></div>
+                            <div id="picture" style="background-image: url('subida/cursos/<%=cc.getCurso().getIdCurso() %>.jpg');"></div>
                         <% } else { %>
-                            <div id="photo"></div>
-                        <% } %>
+                            <div id="picture"></div>
+                            <% } %></a>
                         </td>
-                        <td>
+                        <td style="padding: 10px">
                             <strong><%= cc.getCurso().getNombre() %></strong><br><%= cc.getCurso().getDesc()%>
-                            <center><a href="curso.jsp?c=<%= cc.getId() %>"><button type="submit" name="boton" value="inscrito">Inscribirse</button></a></center> 
+                            <center><a href="curso.jsp?c=<%= cc.getId() %>"><button type="submit" name="boton" value="inscrito">Más información</button></a></center> 
                         </td>
                     </tr>
                 </table>
             </article>
             <% } } else { %>
-            Este Reclutador no cuenta con Cursos
+            <center>Este reclutador no cuenta con cursos actualmente</center>
             <% } %>
         </div>
                     

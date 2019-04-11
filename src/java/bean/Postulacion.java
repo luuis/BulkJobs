@@ -132,7 +132,7 @@ public class Postulacion {
                     Empleador.obtenerCuenta(rs.getInt("post_cuenta")),
                     Curriculum.obtenerCurriculum2(rs.getInt("post_curriculum")),
                     rs.getString("post_comentario"),
-                    rs.getDate("post_fecha_hora"),
+                    new Date(rs.getTimestamp("post_fecha_hora").getTime()),
                     rs.getInt("post_estado"));
                 postulacion.add(p);
             } 

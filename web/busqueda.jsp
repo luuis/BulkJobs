@@ -12,19 +12,22 @@
     <div class="big">
         <div class="container">
             <h2>Vacantes</h2>
-            <%
-            String fTitulo = (request.getParameter("titulo") != null) ? request.getParameter("titulo") : "";
+            <% String fTitulo = (request.getParameter("titulo") != null) ? request.getParameter("titulo") : "";
             String fZona = (request.getParameter("zona") != null) ? request.getParameter("zona") : "";
             int fCategoria = (request.getParameter("categoria") != null) ?
                     Integer.parseInt(request.getParameter("categoria")) : 0;
             ArrayList<Vacante> vacantes = Vacante.obtenerVacantes(fTitulo, fZona, fCategoria);
-            for (Vacante v : vacantes) { %>
-            <article>
-                <h3><%=v.getTitulo()%></h3>
-                <p>
-                    <strong><%=v.getCategoria().getNombre()%></strong> &middot;
-                    <%=v.getCompra().getCuenta().getDireccionMunicipio()%>, <%=v.getCompra().getCuenta().getDireccionEstado()%> &middot; <a href="vacante.jsp?v=<%=v.getId()%>">Leer más...</a></p>
-            </article>
+            if (vacantes.size() > 0) {
+                for (Vacante v : vacantes) { %>
+                <article>
+                    <h3><%=v.getTitulo()%></h3>
+                    <p>
+                        <strong><%=v.getCategoria().getNombre()%></strong> &middot;
+                        <%=v.getCompra().getCuenta().getDireccionMunicipio()%>, <%=v.getCompra().getCuenta().getDireccionEstado()%> &middot; <a href="vacante.jsp?v=<%=v.getId()%>">Leer más...</a></p>
+                </article>
+                <% }
+            } else { %>
+            <center><em>No hay vacantes disponibles</em></center>
             <% } %>
         </div>
     </div>

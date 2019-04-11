@@ -8,7 +8,7 @@
                 </span>
                 <span id="right">
                     <a href="bulkjobs.jsp">Acerca de BulkJobs</a> &middot;
-                    <a href="ayuda.jsp">Contáctanos</a> &middot;
+                    <a href="ayuda.jsp">Centro de ayuda</a> &middot;
                     <% if (sf != null && sf.isIniciada()) { %>
                     <a href="sesion.jsp?f=salir">Cerrar sesión</a> &middot;
                     <% } else { %>

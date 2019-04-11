@@ -5,7 +5,7 @@ public class tets {
         /* JSONObject json = GeoAPI.search("Sierra Hermosa, Tecámac, México");
         System.out.println(json); */
         
-        System.out.println("CL\tCreating email");
+        /* System.out.println("CL\tCreating email");
         Email em = new Email();
         System.out.println("CL\tBuilding email");
         em.setRemitente("luuis.e@outlook.com");
@@ -17,6 +17,8 @@ public class tets {
         em.enviarCorreo();
         System.out.println("CL\tFinish sending");
         
-        System.exit(0);
+        System.exit(0); */
+        
+        System.out.println(TimeTools.getTimeFrom(2592150));
     }
 }

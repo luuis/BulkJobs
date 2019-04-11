@@ -1,5 +1,7 @@
+<%@page import="extra.ConexionBD"%>
 <%@page import="java.util.ArrayList"%>
 <%@page import="bean.Curriculum"%>
+<%@page import="bean.Evaluacion"%>
 <%@page import="java.text.SimpleDateFormat"%>
 <%@page import="bean.Vacante"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
@@ -26,7 +28,7 @@ if (v != null) { %>
             <p>
                 <strong>Categoría</strong>: <a href="busqueda.jsp?categoria=<%=v.getCategoria().getId()%>"><%=v.getCategoria().getNombre()%></a><br>
                 <strong>Paga</strong>: $<%=v.getPaga()%> <%=v.getTipoPagaS().toLowerCase()%><br>
-                <strong>Publicación</strong>: <%=new SimpleDateFormat("dd-MM-YYYY").format(v.getFecha())%>
+                <strong>Publicación</strong>: <%=new SimpleDateFormat("dd/MM/YYYY").format(v.getFecha())%>
             </p>
         </div>
     </div>
@@ -35,7 +37,7 @@ if (v != null) { %>
         <div class="container">
             <h4>Empresa</h4>
             <p><%=v.getCompra().getCuenta().getNombre()%></p>
-            <p>{evaluación}</p>
+            <p>Evaluación: <%=Evaluacion.obtenerProm(v.getCompra().getCuenta().getId())%></p>
             <p><a href="perfil.jsp?c=<%=v.getCompra().getCuenta().getId()%>">
                 <button type="button">Ver perfil</button>
             </a></p>
@@ -50,23 +52,22 @@ if (v != null) { %>
                     <a id="postu">
                         <button type="button"><i class="fas fa-briefcase"></i> Postularse</button>
                     </a>
-                    <a href="CV?c=<%=sesion.getId()%>">
+                    <a target="_blank" href="CV?c=<%=sesion.getId()%>">
                         <button type="button"><i class="fas fa-file-pdf"></i> Ver curriculum</button>
                     </a>
                 </p></center>
                 <script>
                 $(function() {
                     $("#postu").on('click', function() {
-                        var x = prompt("Escribe un comentario para el reclutador.");
+                        alertify.prompt("Escribe un comentario para el reclutador.", "", function (evt, val) {
                             var vaca = "<%=v.getId()%>"; 
                             var user = "<%=sesion.getId()%>";
                             var curr = "<%=curriculum.getId()%>";
-                            $.post('Postulacion', { v: vaca, u: user, c: curr, m: x }, 
-                              function(returnedData) {
+                            $.post('/Postularse', { v: vaca, u: user, c: curr, m: val }, function(returnedData) {
                                 console.log(returnedData);
                                 alertify.success("Te haz postulado correctamente");
-                              }
-                            );
+                            });
+                        });
                     });
                 });
                 </script>
@@ -75,27 +76,35 @@ if (v != null) { %>
                 <% } %>
                 <center><p>
                     <a href="curriculum.jsp?a=subir&v=<%=v.getId()%>">
-                        <button type="button"><i class="fas fa-file-upload"></i> Subir</button>
+                        <button type="button"><i class="fas fa-file-upload"></i> Subir CV</button>
                     </a>
                     <% if (curriculum != null) { %>
                     <a href="curriculum.jsp?a=generar&v=<%=v.getId()%>">
-                        <button type="button"><i class="fas fa-file"></i> Crear</button>
+                        <button type="button"><i class="fas fa-file"></i> Crear CV</button>
                     </a>
                     <a href="curriculum.jsp?a=generar&v=<%=v.getId()%>&actualizar">
-                        <button type="button"><i class="fas fa-file"></i> Actualizar</button>
+                        <button type="button"><i class="fas fa-file"></i> Actualizar CV</button>
                     </a>
                     <% } else { %>
                     <a href="curriculum.jsp?a=generar&v=<%=v.getId()%>">
-                        <button type="button"><i class="fas fa-file-medical"></i> Crear</button>
+                        <button type="button"><i class="fas fa-file-medical"></i> Crear CV</button>
                     </a>
                     <% } %>
                 </p></center>
             </div>
-            <% } else if (sesion.esReclutador() && v.getCompra().getCuenta().getId() == sesion.getId()) { %>
+            <% } else if (sesion.esReclutador() && v.getCompra().getCuenta().getId() == sesion.getId()) {
+            if (request.getParameter("eliminar") != null) {
+                ConexionBD objCBD = new ConexionBD("bolsadetrabajo");
+                ArrayList instBD = new ArrayList();
+                instBD.add("DELETE FROM vacante WHERE id_vacante=?");
+                instBD.add(request.getParameter("v"));
+                objCBD.ejecutarABC(instBD);
+                response.sendRedirect("vacantes.jsp");
+            } %>
             <div class="container">
                 <center>
-                    <a href="editar_vacante.jsp"><button type="button">Editar</button></a>
-                    <button type="button">Eliminar</button>
+                    <a href="vacante_editar.jsp?v=<%=v.getId()%>"><button type="button">Editar</button></a>
+                    <a href="vacante.jsp?v=<%=v.getId()%>&eliminar"><button type="button">Eliminar</button></a>
                     <a href="postulados.jsp?v=<%=v.getId()%>"><button type="button">Ver postulantes</button></a>
                 </center>
             </div>

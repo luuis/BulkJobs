@@ -1,3 +1,4 @@
+<%@page import="extra.TimeTools"%>
 <%@page import="bean.PlanP"%>
 <%@page import="java.util.ArrayList"%>
 <%@page import="bean.Curso"%>
@@ -12,30 +13,24 @@
         <br/>
         <center> <h1>Catalogo de Planes Publicitarios </center></h1>
     </div>
-    <%
-    if(request.getParameter("e") != null){
+    <% if(request.getParameter("e") != null){
         boolean eliminar = PlanP.eliminarPP(Integer.parseInt(request.getParameter("e")));
         if(eliminar){
             response.sendRedirect("/planesp.jsp?m=eliminado");
-                } else {
-                    out.println("<script>alertify.error('No se ha eliminado');</script>");
-                
-            }
+        } else {
+            out.println("<script>alertify.error('No se ha eliminado');</script>");
+        }
     }    
 
     if (request.getParameter("m") != null) {
-                if (request.getParameter("m").equalsIgnoreCase("Registrado")) {
-                    out.println("<script>alertify.success('Tu plan publicitario ha sido registrado')</script>");
-                }
-                if (request.getParameter("m").equalsIgnoreCase("Eliminado")) {
-                    out.println("<script>alertify.success('Tu plan publicitario ha sido eliminado')</script>");
-                }if (request.getParameter("m").equalsIgnoreCase("Editado")) {
-                    out.println("<script>alertify.success('Tu plan publicitario ha sido editado')</script>");
-                }
-            }
-    
-    
-    %>
+        if (request.getParameter("m").equalsIgnoreCase("Registrado")) {
+            out.println("<script>alertify.success('Tu plan publicitario ha sido registrado')</script>");
+        } else if (request.getParameter("m").equalsIgnoreCase("Eliminado")) {
+            out.println("<script>alertify.success('Tu plan publicitario ha sido eliminado')</script>");
+        } else if (request.getParameter("m").equalsIgnoreCase("Editado")) {
+            out.println("<script>alertify.success('Tu plan publicitario ha sido editado')</script>");
+        }
+    } %>
     <div class="container">
         <table class="data" width="100%" >
             <tr>
@@ -43,27 +38,23 @@
                 <th>Descripcion</th>
                 <th>Precio</th>
                 <th>Tiempo</th>
-                
                 <th colspan="3">Acciones</th>
-                
             </tr>
-            <%
-            ArrayList<PlanP> planP = PlanP.obtenerPlanesP();  
-
-            for(int i=0; i<planP.size(); i++){ %>
+            <% ArrayList<PlanP> planP = PlanP.obtenerPlanesP();
+            for (int i=0; i<planP.size(); i++) { %>
             <tr>
                 <td><%=planP.get(i).getNombre()%></td>
                 <td><%=planP.get(i).getDesc()%></td>
                 <td><%=planP.get(i).getPrecio()%></td>
-                <td><%=planP.get(i).getTiempo()%></td>
-                
-                <td><center><a href="comprar.jsp?i=<%=planP.get(i).getIdPlanP()%>"><button><i class="fas fa-shopping-cart"></i> Comprar</button></a></center></td>
-                <td><center><a href="planp_editar.jsp?i=<%=planP.get(i).getIdPlanP()%>"><button><i class="fas fa-edit"></i> Editar</button></a></center></td>
-                <td><center><a href="planesp.jsp?e=<%=planP.get(i).getIdPlanP()%>"><button><i class="fas fa-trash"></i> Eliminar</button></a></center></td>
+                <td><%=TimeTools.getTimeFrom(planP.get(i).getTiempo(), true)%></td>
+                <% if (sesion.esReclutador()) { %>
+                    <td><center><a href="comprar.jsp?i=<%=planP.get(i).getIdPlanP()%>"><button><i class="fas fa-shopping-cart"></i> Comprar</button></a></center></td>
+                <% } else if (sesion.esAdmin()) { %>
+                    <td><center><a href="planp_editar.jsp?i=<%=planP.get(i).getIdPlanP()%>"><button><i class="fas fa-edit"></i> Editar</button></a></center></td>
+                    <td><center><a href="planesp.jsp?e=<%=planP.get(i).getIdPlanP()%>"><button><i class="fas fa-trash"></i> Eliminar</button></a></center></td>
+                <% } %>
             </tr>
-            <% }
-            %>
-           
+            <% } %>
         </table>
     </div>
 </section>

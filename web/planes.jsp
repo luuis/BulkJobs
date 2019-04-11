@@ -1,3 +1,4 @@
+<%@page import="extra.TimeTools"%>
 <%@page import="java.util.ArrayList"%>
 <%@page import="java.sql.Date"%>
 <%@page import="bean.Plan"%>
@@ -9,9 +10,9 @@
 <section class="one">
     <div class="container">
         <center><img src="img/logo-black.png"></center>
-        <center><h2>Catalogo Planes</h2></center>
-    </div>  
-        
+        <center><h2>Catálogo Planes</h2></center>
+    </div>   
+          
     <% if (request.getParameter("e") != null) {
         boolean eliminar = Plan.eliminar(Integer.parseInt(request.getParameter("e")));
 
@@ -35,7 +36,7 @@
             <center>  
             <tr>
                 <th>Nombre</th>
-                <th>Descripcion</th>
+                <th>Descripción</th>
                 <th>Precio</th>
                 <th>No. Vacantes</th> 
                 <th>Tiempo vacante</th>
@@ -43,16 +44,19 @@
             </tr> 
 
             <% ArrayList<Plan> planes = Plan.obtenerPlanes(); 
-            for (int i=0; i<planes.size(); i++) { %>  
+            for (Plan plan : planes) { %>  
             <tr>
-                <td><%=planes.get(i).getNombre()%></td>
-                <td><%=planes.get(i).getDescripcion()%></td>
-                <td><%=planes.get(i).getPrecio()%></td>
-                <td><%=planes.get(i).getVacantes()%></td> 
-                <td><%=planes.get(i).getTiempo()%></td>
-                <td><center><button><a href="comprar.jsp?p=<%=planes.get(i).getIdPlan()%>"><i class="fas fa-shopping-cart"></i>Comprar</a></button></center></td>
-                <td><center><button><a href="plan_editar.jsp?i=<%=planes.get(i).getIdPlan()%>">Editar</a></button></center></td>
-                <td><center><button><a href="planes.jsp?e=<%=planes.get(i).getIdPlan()%>">Eliminar</a></button></center></td>
+                <td><%=plan.getNombre()%></td>
+                <td><%=plan.getDescripcion()%></td>
+                <td><%=plan.getPrecio()%></td>
+                <td><%=plan.getVacantes()%></td> 
+                <td><%=TimeTools.getTimeFrom(plan.getTiempo(), true)%></td>
+                <% if (sesion.esReclutador()) { %>
+                    <td><center><a href="comprar.jsp?p=<%=plan.getIdPlan()%>"><button type="button"><i class="fas fa-shopping-cart"></i> Comprar</button></a></center></td>
+                <% } else if (sesion.esAdmin()) { %>
+                    <td><center><a href="plan_editar.jsp?i=<%=plan.getIdPlan()%>"><button type="button">Editar</button></a></center></td>
+                    <td><center><a href="planes.jsp?e=<%=plan.getIdPlan()%>"><button type="button">Eliminar</button></a></center></td>
+                <% } %>
             </tr> 
             <% } %>
         </table>

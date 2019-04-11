@@ -109,24 +109,25 @@ $('#evaluar i').on('mouseover', function () {
 
 $('#evaluar i').on('click', function() {
     var calif = $(this).data('calif');
-    var comen = prompt("Ingresa un comentario");
-    /*POST tiene 3 atributos: la pagina que se va a mandar, los campos, y funcion que se hara despuess*/
-    $.post('/Evaluacion',
-    /*Enviar los campos al Servlets*/
-    { 
-       c: calif, 
-       co: comen,
-       idCuenta: $("#idCuenta").val(), //recuperar el input y luego el valor
-       idEvalu: $("#idEvalu").val()
-       
-    }, function(data, status) {
-        alertify.success(data); //alertify no es nativa, es una libreria
-        window.location.reload();
+    alertify.prompt("Escribe un comentario para el reclutador.", "", function (evt, val) {
+        /*POST tiene 3 atributos: la pagina que se va a mandar, los campos, y funcion que se hara despuess*/
+        $.post('/Evaluacion',
+        /*Enviar los campos al Servlets*/
+        { 
+           c: calif, 
+           co: val,
+           idCuenta: $("#idCuenta").val(), //recuperar el input y luego el valor
+           idEvalu: $("#idEvalu").val()
+
+        }, function(data, status) {
+            alertify.success(data); //alertify no es nativa, es una libreria
+            window.location.reload();
+        });
     });
 });
 
 $('#inscribirte').on('click', function() { 
-    if(confirm('¿Estas seguro de inscribirte?')){
+    alertify.confirm("¿Estas seguro de inscribirte?", function () {
         var cue = $("#cue").val(); 
         var cur = $("#cur").val();
         
@@ -135,10 +136,10 @@ $('#inscribirte').on('click', function() {
             idCuenta: cue,
             idCurso: cur
         }, function(data, status) {
-            alertify.success(data);
             window.location.reload();
+            alertify.success(data);
         }); //PUSE POST PARA AJAX JEJE 
-    }
+    });
 });
  
 $('#calif i').on('mouseover', function () {
@@ -152,26 +153,24 @@ $('#calif i').on('mouseover', function () {
             $(this).addClass('far');
         }
     });
-    
-    
 });
     
 $('#calif i').on('click', function() {
     var calif = $(this).data('calif');
-    var comen = prompt("Ingresa un comentario");
+    alertify.prompt("Ingresa un comentario.", "", function (evt, val) {
+        /*POST tiene 3 atributos: la pagina que se va a mandar, los campos, y funcion que se hara despuess*/
+        $.post('/EvaluacionC',
+        /*Enviar los campos al Servlets*/
+        { 
+           c: calif, 
+           co: val,
+           idCuenta: $("#idCuenta").val(), //recuperar el input y luego el valor
+           idCurso: $("#idCurso").val()
 
-    /*POST tiene 3 atributos: la pagina que se va a mandar, los campos, y funcion que se hara despuess*/
-    $.post('/EvaluacionC',
-    /*Enviar los campos al Servlets*/
-    { 
-       c: calif, 
-       co: comen,
-       idCuenta: $("#idCuenta").val(), //recuperar el input y luego el valor
-       idCurso: $("#idCurso").val()
-
-    }, function(data, status) {
-        alertify.success(data); //alertify no es nativa, es una libreria
-        window.location.reload(); 
+        }, function(data, status) {
+            alertify.success(data); //alertify no es nativa, es una libreria
+            window.location.reload(); 
+        });
     });
 });
  
@@ -179,10 +178,8 @@ $('#finalizar').on('click', function() {
     /*POST tiene 3 atributos: la pagina que se va a mandar, los campos, y funcion que se hara despuess*/
     $.post('/FinalizarC',
     /*Enviar los campos al Servlets*/
-    { 
-
+    {
        idCursoInscrito: $("#cur").val(), //recuperar el input y luego el valor
-
     }, function(data, status) {
         alertify.success(data); //alertify no es nativa, es una libreria
         window.location.reload(); 

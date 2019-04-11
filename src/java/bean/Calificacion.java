@@ -140,10 +140,10 @@ public class Calificacion {
            while(rs.next()){
                
                Calificacion cal = new Calificacion(rs.getInt("id_calificacion"), 
-                      rs.getFloat("cali_calificacion"),
+                       rs.getFloat("cali_calificacion"),
                        CursoInscrito.ObtenerCurso(rs.getInt("cali_curso")),
                        Empleador.obtenerCuenta(rs.getInt("cali_cuenta")),
-                       rs.getDate("cali_fecha_hora"),
+                       new Date(rs.getTimestamp("cali_fecha_hora").getTime()),
                        rs.getString("cali_comentario"));
                calificaciones.add(cal);
                     /*   Reclutador.obtenerCuenta(rs.getInt("eval_reclutador")), rs.getFloat("eval_calificacion"), rs.getString("eval_comentario"));
@@ -170,10 +170,10 @@ public class Calificacion {
                
                Calificacion cal = new Calificacion(rs.getInt("id_calificacion"), 
                       rs.getFloat("cali_calificacion"),
-                       CursoInscrito.ObtenerCurso(rs.getInt("cali_curso")),
-                       Empleador.obtenerCuenta(rs.getInt("cali_cuenta")),
-                       rs.getDate("cali_fecha_hora"),
-                       rs.getString("cali_comentario"));
+                      CursoInscrito.ObtenerCurso(rs.getInt("cali_curso")),
+                      Empleador.obtenerCuenta(rs.getInt("cali_cuenta")),
+                      new Date(rs.getTimestamp("cali_fecha_hora").getTime()),
+                      rs.getString("cali_comentario"));
                
                calificaciones.add(cal);  //Calificaciones es el array y llamo a cal para que se vean los coemntarios 
                        

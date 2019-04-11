@@ -20,11 +20,11 @@
         } %>
         <center>
             <div class="container">  
-                <h4>Empresa</h4>
+                <h4>Ingresar vacante</h4>
                 <input type="hidden" name="p" value="<%=request.getParameter("p")%>">
                 <p>
-                    <label>Nombre Vacante<font color="red"></font></label>
-                    <input type="text" required name="nombre" placeholder="Nombre Vacante">
+                    <label>Ttulo de la vacante<font color="red"></font></label>
+                    <input type="text" required name="nombre" placeholder="Título de la vacante">
                 </p> 
                 <p>
                     <label for="bsqCategoria">Categoria</label>
@@ -40,15 +40,15 @@
                 </p>
                 <p>
                     <label>Detalles</label>
-                    <input type="text" required name="detalles" placeholder="Detalles necesarios">
+                    <textarea required name="detalles" rows="6" placeholder="Detalles"></textarea>
                 </p>
                 <p>
                     <label>Requisitos</label>
-                    <input type="text" required name="requisitos" placeholder="Descripción">
+                    <textarea required name="requisitos" rows="6" placeholder="Requisitos"></textarea>
                 </p>
                 <p>
                     <label>Sueldo a Ofrecer</label>
-                    <input type="text" required name="paga" placeholder="Sueldo ej. 1500">
+                    <input type="text" required name="paga" placeholder="Sueldo">
                 </p>
                 <p>
                     <label>Tipo de paga</label>

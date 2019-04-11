@@ -32,6 +32,16 @@ public class Vacante {
         this.compra = compra;
         this.fecha = fecha;
     }
+    
+    public Vacante(int id, String titulo, String detalles, String requisitos, double paga, String tipoPaga, Categoria categoria) {
+        this.id = id;
+        this.titulo = titulo;
+        this.detalles = detalles;
+        this.requisitos = requisitos;
+        this.paga = paga;
+        this.tipoPaga = tipoPaga;
+        this.categoria = categoria;
+    }
 
     public Vacante(String titulo, String detalles, String requisitos, double paga, String tipoPaga, Categoria categoria, PlanComprado compra) {
         this.titulo = titulo;
@@ -141,7 +151,7 @@ public class Vacante {
         try {
             ConexionBD objCBD = new ConexionBD("bolsadetrabajo");
             ArrayList instBD = new ArrayList();
-            String query = "SELECT * FROM vacante WHERE vaca_estado = 1";
+            String query = "SELECT * FROM vacante INNER JOIN plan_comprado ON vaca_compra=id_plan_comprado WHERE NOW() <= plco_fecha_limite";
             
             if (!titulo.trim().isEmpty() || !zona.trim().isEmpty() || categoria != 0) {
                 String filter = "";
@@ -162,7 +172,7 @@ public class Vacante {
             objCBD.consultar(instBD);
             ResultSet rs = objCBD.getCdr();
             while (rs.next()) {
-                Vacante v = new Vacante(rs.getInt(1), rs.getString(4), rs.getString(5), rs.getString(6), rs.getDouble(7), rs.getString(8), rs.getInt(9), Categoria.obtenerCategoria(rs.getInt(2)), PlanComprado.obtenerPlanComprado(rs.getInt(3)), rs.getDate(10));
+                Vacante v = new Vacante(rs.getInt(1), rs.getString(4), rs.getString(5), rs.getString(6), rs.getDouble(7), rs.getString(8), rs.getInt(9), Categoria.obtenerCategoria(rs.getInt(2)), PlanComprado.obtenerPlanComprado(rs.getInt(3)), new Date(rs.getTimestamp(10).getTime()));
                 vacantes.add(v);
             }
         } catch (SQLException ex) {
@@ -181,7 +191,7 @@ public class Vacante {
             objCBD.consultar(instBD);
             ResultSet rs = objCBD.getCdr();
             while (rs.next()) {
-                vacante = new Vacante(rs.getInt(1), rs.getString(4), rs.getString(5), rs.getString(6), rs.getDouble(7), rs.getString(8), rs.getInt(9), Categoria.obtenerCategoria(rs.getInt(2)), PlanComprado.obtenerPlanComprado(rs.getInt(3)), rs.getDate(10));
+                vacante = new Vacante(rs.getInt(1), rs.getString(4), rs.getString(5), rs.getString(6), rs.getDouble(7), rs.getString(8), rs.getInt(9), Categoria.obtenerCategoria(rs.getInt(2)), PlanComprado.obtenerPlanComprado(rs.getInt(3)), new Date(rs.getTimestamp(10).getTime()));
             }
         } catch (SQLException ex) {
             ex.printStackTrace();
@@ -209,6 +219,22 @@ public class Vacante {
         
         return false; 
     }
+     
+     
+    
+    public void modificar(){
+        ConexionBD objCBD = new ConexionBD("bolsadetrabajo");
+        ArrayList instBD = new ArrayList(); 
+        instBD.add("UPDATE vacante SET vaca_titulo=?, vaca_detalles=?, vaca_requisitos=?, vaca_paga=?, vaca_tipo_paga=?, vaca_categoria=? WHERE id_vacante=?");
+        instBD.add(titulo); 
+        instBD.add(detalles); 
+        instBD.add(requisitos);
+        instBD.add(paga);
+        instBD.add(tipoPaga);
+        instBD.add(categoria.getId());
+        instBD.add(id);
+        objCBD.ejecutarABC(instBD);
+    }
     
     public static ArrayList<Vacante> obtenerVacantesReclutador(int reclutador) {
         ArrayList<Vacante> vacantes = new ArrayList(); 
@@ -220,7 +246,7 @@ public class Vacante {
             objCBD.consultar(instBD);
             ResultSet rs = objCBD.getCdr();
             while (rs.next()) {
-                Vacante v = new Vacante(rs.getInt(1), rs.getString(4), rs.getString(5), rs.getString(6), rs.getDouble(7), rs.getString(8), rs.getInt(9), Categoria.obtenerCategoria(rs.getInt(2)), PlanComprado.obtenerPlanComprado(rs.getInt(3)), rs.getDate(10));
+                Vacante v = new Vacante(rs.getInt(1), rs.getString(4), rs.getString(5), rs.getString(6), rs.getDouble(7), rs.getString(8), rs.getInt(9), Categoria.obtenerCategoria(rs.getInt(2)), PlanComprado.obtenerPlanComprado(rs.getInt(3)), new Date(rs.getTimestamp(10).getTime()));
                 vacantes.add(v);
             }
         } catch (SQLException ex) {
@@ -239,7 +265,7 @@ public class Vacante {
             objCBD.consultar(instBD);
             ResultSet rs = objCBD.getCdr();
             while (rs.next()) {
-                Vacante v = new Vacante(rs.getInt(1), rs.getString(4), rs.getString(5), rs.getString(6), rs.getDouble(7), rs.getString(8), rs.getInt(9), Categoria.obtenerCategoria(rs.getInt(2)), PlanComprado.obtenerPlanComprado(rs.getInt(3)), rs.getDate(10));
+                Vacante v = new Vacante(rs.getInt(1), rs.getString(4), rs.getString(5), rs.getString(6), rs.getDouble(7), rs.getString(8), rs.getInt(9), Categoria.obtenerCategoria(rs.getInt(2)), PlanComprado.obtenerPlanComprado(rs.getInt(3)), new Date(rs.getTimestamp(10).getTime()));
                 vacantes.add(v);
             }
         } catch (SQLException ex) {

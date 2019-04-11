@@ -92,7 +92,7 @@ public class CursoComprado {
             objCBD.consultar(instBD);
             ResultSet rs = objCBD.getCdr();
             while(rs.next()){
-                CursoComprado cc = new CursoComprado(rs.getInt("id_curso_comprado"), Curso.obtenerCurso(rs.getInt("cuco_curso")), Cuenta.obtenerCuenta(rs.getInt("cuco_cuenta")), rs.getDate("cuco_fecha_hora"));
+                CursoComprado cc = new CursoComprado(rs.getInt("id_curso_comprado"), Curso.obtenerCurso(rs.getInt("cuco_curso")), Cuenta.obtenerCuenta(rs.getInt("cuco_cuenta")), new Date(rs.getTimestamp("cuco_fecha_hora").getTime()));
                 cursosComprados.add(cc);
             }
         } catch (SQLException ex) {
@@ -114,7 +114,7 @@ public class CursoComprado {
             objCBD.consultar(instBD);
             ResultSet rs = objCBD.getCdr();
             while(rs.next()){
-               cc = new CursoComprado(rs.getInt("id_curso_comprado"), Curso.obtenerCurso(rs.getInt("cuco_curso")), Cuenta.obtenerCuenta(rs.getInt("cuco_cuenta")), rs.getDate("cuco_fecha_hora"));
+               cc = new CursoComprado(rs.getInt("id_curso_comprado"), Curso.obtenerCurso(rs.getInt("cuco_curso")), Cuenta.obtenerCuenta(rs.getInt("cuco_cuenta")), new Date(rs.getTimestamp("cuco_fecha_hora").getTime()));
             }
         } catch (SQLException ex) {
             ex.printStackTrace();

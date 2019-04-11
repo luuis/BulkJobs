@@ -457,8 +457,12 @@
                         boolean is = sesion.iniciarSesion(request.getParameter("correo"), request.getParameter("contrasena"));
                         if (is) {
                             if (sesion.isActiva()) {
-                                response.sendRedirect("perfil.jsp");
                                 session.setAttribute("sesion", sesion);
+                                if (sesion.esAdmin()) {
+                                    response.sendRedirect("busqueda.jsp");
+                                } else {
+                                    response.sendRedirect("perfil.jsp");
+                                }
                             } else {
                                 out.println("<script>alertify.error('Debes activar tu cuenta, revisa en tu correo el enlace de activacion');</script>");
                             }

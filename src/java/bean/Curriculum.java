@@ -89,7 +89,7 @@ public class Curriculum {
             objCBD.consultar(instBD);
             ResultSet rs = objCBD.getCdr();
             while (rs.next()) {
-                Curriculum c = new Curriculum(rs.getInt(1), Empleador.obtenerCuenta(rs.getInt(2)), rs.getString(3), rs.getDate(4));
+                Curriculum c = new Curriculum(rs.getInt(1), Empleador.obtenerCuenta(rs.getInt(2)), rs.getString(3), new Date(rs.getTimestamp(4).getTime()));
                 curriculums.add(c);
             }
         } catch (SQLException ex) {
@@ -108,7 +108,7 @@ public class Curriculum {
             objCBD.consultar(instBD);
             ResultSet rs = objCBD.getCdr();
             while (rs.next()) {
-                curriculum = new Curriculum(rs.getInt(1), Empleador.obtenerCuenta(rs.getInt(2)), rs.getString(3), rs.getDate(4));
+                curriculum = new Curriculum(rs.getInt(1), Empleador.obtenerCuenta(rs.getInt(2)), rs.getString(3), new Date(rs.getTimestamp(4).getTime()));
             }
         } catch (SQLException ex) {
             ex.printStackTrace();
@@ -126,7 +126,7 @@ public class Curriculum {
             objCBD.consultar(instBD);
             ResultSet rs = objCBD.getCdr();
             while (rs.next()) {
-                curriculum = new Curriculum(rs.getInt(1), Empleador.obtenerCuenta(rs.getInt(2)), rs.getString(3), rs.getDate(4));
+                curriculum = new Curriculum(rs.getInt(1), Empleador.obtenerCuenta(rs.getInt(2)), rs.getString(3), new Date(rs.getTimestamp(4).getTime()));
             }
         } catch (SQLException ex) {
             ex.printStackTrace();
