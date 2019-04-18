@@ -289,7 +289,7 @@ try {
                     <td><%= perfil.getDireccionLocalidad()%>, <%= perfil.getDireccionNumExterior() %>, <%= perfil.getDireccionNumInterior() %>, <%= perfil.getDireccionMunicipio() %>, <%= perfil.getDireccionEstado() %></td>
                     
                 </tr>
-                
+ -               
             </table>
         </div>
 
@@ -331,8 +331,6 @@ try {
                       <th>Telefono: </th>
                     <td><%= perfil.getTelefono() %></td>
                 </tr>
-                
-                
                    <tr>
                     <th>Direccion:</th>
                     <td><%= perfil.getDireccionLocalidad()%>, <%= perfil.getDireccionNumExterior() %>, <%= perfil.getDireccionNumInterior() %>, <%= perfil.getDireccionMunicipio() %>, <%= perfil.getDireccionEstado() %></td>

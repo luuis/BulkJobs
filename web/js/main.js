@@ -156,8 +156,8 @@ $('#calif i').on('mouseover', function () {
 });
     
 $('#calif i').on('click', function() {
-    var calif = $(this).data('calif');
-    alertify.prompt("Ingresa un comentario.", "", function (evt, val) {
+        var calif = $(this).data('calif');
+        alertify.prompt("Ingresa un comentario.", "", function (evt, val) {
         /*POST tiene 3 atributos: la pagina que se va a mandar, los campos, y funcion que se hara despuess*/
         $.post('/EvaluacionC',
         /*Enviar los campos al Servlets*/
